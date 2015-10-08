@@ -1,9 +1,12 @@
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -22,10 +25,19 @@ public class Inicio extends JFrame {
 	 * @param args
 	 */
 	
-	static final String RUTA = "j:/digitalización/00 documentacion/01 Escaneado"; 
-	static final String RUTAB = "h:/digitalización/00 documentacion/01 Escaneado";
-	static final String RUTAURG ="j:/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)"; 
-	static final String RUTAURGB ="H:/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)";
+	static String RUTA = ":/digitalización/00 documentacion/01 Escaneado";
+//	static final String RUTAB = "h:/digitalización/00 documentacion/01 Escaneado";
+	static String RUTAURG ="j:/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)"; 
+
+//	static final String RUTAURGB ="H:/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)";
+	static String RUTA_NO_RECONOCIDOS = ":/digitalización/00 documentacion/10 Registrar docs";
+	
+	static final String rutaImagenes = "Hermes/ImagenesPdfs/";
+	static public String rutaHermes = ":\\DIGITALIZACIÓN\\00 DOCUMENTACION\\99 Nombres Normalizados\\Hermes\\ImagenesPdfs";
+	static public String rutaHermes_TXT = ":\\DIGITALIZACIÓN\\00 DOCUMENTACION\\99 Nombres Normalizados\\Hermes.txt";
+	static public String rutaHermes_XLS = ":\\DIGITALIZACIÓN\\00 DOCUMENTACION\\99 Nombres Normalizados\\Hermes.xls";
+	
+	static public TreeMap<String, Indices> indiceGeneralAyuda = new TreeMap<String, Indices>();
 	
 	static String unidadHDD = "";
 	
@@ -115,6 +127,9 @@ public class Inicio extends JFrame {
     static VentanaIntegral ventanaIntegral;
     static VentanaMicro ventanaMicro;
     
+    static InterfazVisorMeta ventanaAyuda;
+    static Visor visorAyuda;
+        
     static VentanaFechas ventanaFechas;
     static boolean esperarFecha = false;
     
@@ -220,6 +235,16 @@ public class Inicio extends JFrame {
 		}
 
 		
+		
+		unidadHDD = detectaUnidadHDD();
+		RUTA = unidadHDD + RUTA;
+		RUTAURG = unidadHDD + RUTAURG;
+		RUTA_NO_RECONOCIDOS = unidadHDD + RUTA_NO_RECONOCIDOS;
+		
+		rutaHermes = unidadHDD + rutaHermes;
+		rutaHermes_TXT = unidadHDD + rutaHermes_TXT;
+		rutaHermes_XLS = unidadHDD + rutaHermes_XLS;
+				
 		excel = new LeerExcel();
 		
 		// JOptionPane.showMessageDialog(null, "Empezamos a leer excel documentos");
@@ -262,7 +287,8 @@ public class Inicio extends JFrame {
 			    	
 		}
 	
-	    modelos = excel.leerModelos("DocumentosOCR.xls", documentacionDeUrgencias);
+	 //   modelos = excel.leerModelos("DocumentosOCR.xls", documentacionDeUrgencias);
+	    modelos = excel.leerModelos("Hermes.xls", documentacionDeUrgencias);
 		
 		// System.out.println(modelos.get(83).instruccionesNHC);
 	    
@@ -302,7 +328,31 @@ public class Inicio extends JFrame {
            	ventanaExplorador.setBounds(Inicio.coordenadas.coordenadas[0].x,Inicio.coordenadas.coordenadas[0].y,
            			                    Inicio.coordenadas.coordenadas[1].x,Inicio.coordenadas.coordenadas[1].y);
            	
-        }
+            ventanaAyuda = new InterfazVisorMeta();
+            visorAyuda = new Visor();
+            
+            Point pVentanaAyuda = Inicio.ventanaAyuda.getLocation();
+            Point pVisorAyuda = Inicio.visorAyuda.getLocation();
+            
+ 
+            System.out.println("Localización ventana ayuda x: " + pVentanaAyuda.x);
+            System.out.println("Localización ventana ayuda y: " + pVentanaAyuda.y);
+            System.out.println("Localización visor ayuda x: " + pVisorAyuda.x);
+            System.out.println("Localización visor ayuda y: " + pVisorAyuda.y);
+            
+            int x = pVentanaAyuda.x-250;
+            int dist = x + 800;
+            
+    		if(Inicio.numeroPantallas == 2){
+    			x += 200;
+    			dist += 400;
+    		}
+
+            
+            ventanaAyuda.setBounds(x,pVentanaAyuda.y,800,900);
+            visorAyuda.setBounds(dist,pVentanaAyuda.y,700,900);
+	    
+	    }
 	    
 	    System.out.println("Iniciando la captura del teclado.");
 	    new CapturaRatonYTeclado();
@@ -313,6 +363,48 @@ public class Inicio extends JFrame {
 		
 	}
 
+	
+	private static String detectaUnidadHDD(){
+		
+		ArrayList<String> unidades = new ArrayList<String>();
+		
+		File[] hdds = File.listRoots();
+		for(int i=0;i<hdds.length;i++){
+			unidades.add(hdds[i].getAbsolutePath().substring(0,1));
+		}
+		
+		
+		String posibleRuta = "h" + RUTA;
+		File ruta = new File(posibleRuta);
+		if(ruta.exists()){
+			return "h";
+		}
+		else{
+			posibleRuta = "j" + RUTA;
+			ruta = new File(posibleRuta);
+			if(ruta.exists())
+				return "j";
+			
+		}
+
+		for(int i=0;i<unidades.size();i++){
+			posibleRuta = unidades.get(i) + RUTA;
+			ruta = new File(posibleRuta);
+			if(ruta.exists()){
+				return unidades.get(i);
+			}
+			
+		}
+		
+		
+		
+		
+		JOptionPane.showMessageDialog(null, "Problemas con la unidad de disco");
+		
+		return null;
+	}
+	
+	
 }
 
 class VentanaUrgODoc{
@@ -333,6 +425,10 @@ class VentanaUrgODoc{
 	}
 	
 }
+
+
+
+
 
 class IdentificarPc {
 

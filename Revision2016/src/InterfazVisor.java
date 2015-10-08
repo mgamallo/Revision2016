@@ -266,7 +266,7 @@ public class InterfazVisor extends JDialog{
 				int fil = tabla.rowAtPoint(e.getPoint());
 				int column = tabla.columnAtPoint(e.getPoint());
 				if(e.getClickCount() == 2){
-					Visor v = new Visor(nombres,rutaJpgs,fil*3+column,observaciones);
+					Visor v = new Visor(nombres,rutaJpgs,fil*3+column,observaciones, null);
 				}
 				else{
 				

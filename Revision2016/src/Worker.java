@@ -68,7 +68,7 @@ class Worker extends SwingWorker<Double, Integer>{
 		
 		for(int i=0;i<aux;i++){
 			for(int j=0;j<tamModelos;j++){
-				if(Inicio.listaDocumentos[i].detector(Inicio.modelos.get(j))){
+				if(Inicio.listaDocumentos[i].detector(Inicio.modelos.get(j),j)){
 					break;
 				}
 			}

@@ -8,7 +8,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class AbrirCarpeta {
 	String ruta =Inicio.RUTA; 
-	String rutab =Inicio.RUTAB;												// trabajo
+	// String rutab =Inicio.RUTAB;												// trabajo
 	String nombreCarpeta;
 	String rutaCarpeta;
 	JFileChooser explorador;
@@ -22,7 +22,7 @@ public class AbrirCarpeta {
 		
 		if(Inicio.documentacionDeUrgencias){
 			ruta = Inicio.RUTAURG;
-			rutab = Inicio.RUTAURGB;
+	//		rutab = Inicio.RUTAURGB;
 		}
 		
 		eligeDirectorio = listaPdfs();
@@ -39,10 +39,7 @@ public class AbrirCarpeta {
 	boolean listaPdfs(){
 		explorador = new JFileChooser();
 		explorador.setDialogTitle("Abrir carpeta...");
-		if(!(new File(ruta).exists())){
-			ruta = rutab;
-		}
-		Inicio.unidadHDD = ruta.substring(0, 1);
+
 		if(Inicio.documentacionDeUrgencias){
 				String cadenaUsuario = "\\01 " + Inicio.usuario + "\\01 Escaneado";
 				ruta += cadenaUsuario;
@@ -112,9 +109,7 @@ public class AbrirCarpeta {
 		
 		
 		//	Obtener ficheros pdf
-		if(!(new File(ruta).exists())){
-			ruta = rutab;
-		}
+
 		File directorio = new File(ruta);
 		// System.out.println(directorio.getAbsolutePath());
 

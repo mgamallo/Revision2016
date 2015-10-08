@@ -30,6 +30,8 @@ public class Documento {
 	
 	String cadenaOCR = "";										// ok
 	
+	String numeroModelo = "";
+	
 	ArrayList<String> metadatos = new ArrayList<String>();
 	Fisica fisica = new Fisica();								// ok
 	
@@ -54,6 +56,10 @@ public class Documento {
 	public void getNhc(){
 		nhc = mapa.nhc;
 		fisica = mapa.fisica;
+	}
+	
+	void setNumeroModelo(int imagen, String columna){
+		numeroModelo = (imagen+1) + columna;
 	}
 	
 	boolean reDetectorNHCUrgencias(){
@@ -126,7 +132,7 @@ public class Documento {
 					boolean fin = false;
 					boolean error = false;
 					
-					System.out.println("SubCadena... " + subCadena + ". Contador... " + contador);
+				//	System.out.println("SubCadena... " + subCadena + ". Contador... " + contador);
 					
 					while(!fin && contador!= -1 && (contador < subCadena.length())){
 						
@@ -167,7 +173,7 @@ public class Documento {
 	}
 	
 	
-	boolean detector(Modelo modelo){
+	boolean detector(Modelo modelo, int numero){
 		
 		if(!nhc.equals("Separador")){
 			// detectaEcos();
@@ -179,6 +185,8 @@ public class Documento {
 						servicio = modelo.servicios.get(0);
 						// System.out.println("Caso 0: " +modelo.fisica.tamañoPagina + " = " + fisica.tamañoPagina);
 						System.out.println("Se encontró por esta palabra: " + modelo.metadatos.metaServicioNombre);
+						setNumeroModelo(numero,"A");
+						
 						return true;
 					}
 					else{
@@ -189,12 +197,13 @@ public class Documento {
 								nombreNormalizado = modelo.nombreNormalizado;
 								//System.out.println("Caso 1: " +modelo.fisica.tamañoPagina + " = " + fisica.tamañoPagina);
 								System.out.println("Se encontró por esta palabra: " + modelo.metadatos.metaNombre);
-								
+								setNumeroModelo(numero, "B");
 								marca = true;
 							}
 							else if(!modelo.metadatos.metaModelo.equals("@")){
 								if(cadenaOCR.contains(modelo.metadatos.metaModelo)){
 									nombreNormalizado = modelo.nombreNormalizado;
+									setNumeroModelo(numero, "C");
 									marca = true;
 									// System.out.println("Caso 2: " +modelo.fisica.tamañoPagina + " = " + fisica.tamañoPagina);
 									System.out.println("Se encontró por esta palabra: " + modelo.metadatos.metaModelo);
@@ -222,12 +231,13 @@ public class Documento {
 							nombreNormalizado = modelo.nombreNormalizado;
 							// System.out.println("Caso 1: " +modelo.fisica.tamañoPagina + " = " + fisica.tamañoPagina);
 							System.out.println("Se encontró por esta palabra: " + modelo.metadatos.metaNombre);
-
+							setNumeroModelo(numero, "B");
 							marca = true;
 						}
 						else if(!modelo.metadatos.metaModelo.equals("@")){
 							if(cadenaOCR.contains(modelo.metadatos.metaModelo)){
 								nombreNormalizado = modelo.nombreNormalizado;
+								setNumeroModelo(numero, "C");
 								marca = true;
 								//System.out.println("Caso 2: " +modelo.fisica.tamañoPagina + " = " + fisica.tamañoPagina);
 								System.out.println("Se encontró por esta palabra: " + modelo.metadatos.metaModelo);
@@ -364,10 +374,13 @@ public class Documento {
 		}
 		
 		String raiz = Inicio.rutaDirectorio.substring(0,indexCarpeta);
-		System.out.println(raiz);
-		int indexRaiz = raiz.lastIndexOf("\\");
-		System.out.println(indexRaiz);
-		raiz = raiz.substring(0,indexRaiz);
+		System.out.println("Raiz... " + raiz);
+		while(raiz.contains("01 Esc")){
+			int indexRaiz = raiz.lastIndexOf("\\");
+			raiz = raiz.substring(0,indexRaiz);
+		}
+
+		
 		System.out.println(raiz);
 		raiz += "\\02 Revisado" + carpeta;
 		System.out.println(raiz);
@@ -379,19 +392,47 @@ public class Documento {
 			Inicio.carpetaActualRevisando = raiz;
 		}
 			
-		
+		System.out.println("Ruta Archivo... " + rutaArchivo);
 		int indexNombrePdf = rutaArchivo.lastIndexOf("\\");
 		String nuevoNombrePdf = rutaArchivo.substring(indexNombrePdf);
+		rutaOriginal = rutaArchivo;
 		raiz += nuevoNombrePdf;
 		System.out.println(raiz);
 		
 		int indice= raiz.lastIndexOf(".pdf");
 		String nuevaRuta = raiz.substring(0, indice);
-		if(indicadorNumeroCarpeta){
-			nuevaRuta += " $" + numeroCarpeta;
-		}
-		nuevaRuta = nuevaRuta + " @" + nhc + " @" + servicio + " @" + this.nombreNormalizado +" r.pdf";
+		String añadido = "";
 		
+		if(numeroModelo.length()> 0){
+			añadido = " " + numeroModelo;
+		}
+		
+		if(indicadorNumeroCarpeta){
+			añadido += (" $" + numeroCarpeta);
+		}
+		
+		añadido += (" @" + nhc + " @" + servicio + " @" + this.nombreNormalizado +" r.pdf");
+		
+		nuevaRuta = nuevaRuta + añadido;
+		
+		
+		System.out.println("***************************");
+		System.out.println("NuevaRutaRevisados... " + nuevaRuta);
+		
+		
+		// Hace una copia de los documentos no reconocidos
+		if(this.nombreNormalizado.toLowerCase().equals("x") && !nhc.equals("Separador")){
+			String rutaNoReconocidos = Inicio.RUTA_NO_RECONOCIDOS + "/Nombre/" + carpeta.substring(1);
+			File direct = new File(rutaNoReconocidos);
+			direct.mkdirs();
+			rutaNoReconocidos += ("/" + nuevoNombrePdf.substring(1,nuevoNombrePdf.indexOf(".pdf")) + añadido);
+			
+			System.out.println("Doc. No reconocido...");
+			System.out.println("RutaOriginal... " + "\t" + rutaOriginal);
+			System.out.println("RutaNoRecono... " + "\t" + rutaNoReconocidos);
+			
+			CopiarFichero.copiar(rutaOriginal, rutaNoReconocidos);
+		}
 		
 		
 		System.out.println(nuevaRuta);

@@ -252,7 +252,7 @@ public class InterfazVisorNomDoc extends JDialog{
 				int column = tabla.columnAtPoint(e.getPoint());
 				
 				if(e.getClickCount() == 2){
-					Visor v = new Visor(nombres,rutaJpgs,fil*3+column,observaciones);
+					Visor v = new Visor(nombres,rutaJpgs,fil*3+column,observaciones, null);
 				}
 				else{
 					texto.setText("     " + nombres.get(fil*3 + column));

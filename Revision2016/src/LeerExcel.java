@@ -407,71 +407,117 @@ public class LeerExcel {
 	        Workbook archivoExcel = Workbook.getWorkbook(new File(archivo));
 	        
 			
-	        int hojaExcel = 0;
+	        int hojaExcel = 1;
+	        
+	        // Hacemos la elección al reves. Si subimos documentación
+	        // Introducimos en la tabla todos los documentos menos los de urgencias.
+	        String tipoSubida = "Urgencias";
 	        if(documentacionDeUrgencias){
-	        	hojaExcel = 1;
+	        	tipoSubida = "Documentación";
 	        	System.out.println("Elegimos urgencias");
 	        }
 	        
-	        Sheet hoja = archivoExcel.getSheet(hojaExcel);
-	        int numColumnas = hoja.getColumns() ;
-	        int numFilas = hoja.getRows();
 	        
-	        for(int fila=2;fila<numFilas;fila++){
+	        Sheet hoja = archivoExcel.getSheet(hojaExcel);
+	        int numColumnas = 12;
+	        int numFilas = 0;
+	        
+	        while(!hoja.getCell(0,numFilas).getContents().toString().equals("ultimo")){
+	        	numFilas++;
+	        }
+	       // numFilas--;
+	        
+	        for(int fila=1;fila<numFilas;fila++){
 	        	Modelo modelo = new Modelo();
 	        	
-	        	System.out.println("Fila... " + fila);
+	        	// System.out.println("Fila... " + fila);
 	        	
-	        	modelo.rutaImagen = hoja.getCell(0,fila).getContents();
-	        	modelo.nombreNormalizado = hoja.getCell(1,fila).getContents();
-	        	modelo.setServiciosModelo(hoja.getCell(2,fila).getContents());
 	        	
-	        	String aux = hoja.getCell(3,fila).getContents();
-	        	int formato = 3;  // Formato o A4, o A5 por defecto
-	        	if(aux.equals("A4")){
-	        		formato = 0;
+	        	if(!hoja.getCell(5,fila).getContents().toString().equals(tipoSubida)){
+	        		
+		        	modelo.rutaImagen = hoja.getCell(0,fila).getContents();
+		        	modelo.nombreNormalizado = hoja.getCell(1,fila).getContents();
+		        	modelo.setServiciosModelo(hoja.getCell(2,fila).getContents());
+		        	
+		        	String aux = hoja.getCell(4,fila).getContents();
+		        	int formato = 3;  // Formato o A4, o A5 por defecto
+		        	if(aux.equals("A4")){
+		        		formato = 0;
+		        	}
+		        	else if(aux.equals("A5")){
+		        		formato = -1;
+		        	}
+		        	else if(aux.equals("A3")){
+		        		formato = 1;
+		        	}
+		        	modelo.fisica.tamañoPagina = formato;
+		        	
+		        	aux = hoja.getCell(3,fila).getContents();
+		        	int orientacion = 0; // Por defecto vertical u horizontal
+		        	if(aux.equals("Vertical")){
+		        		orientacion = 1;
+		        	}
+		        	else {
+		        		orientacion = 2;
+		        	}
+		        	modelo.fisica.vertical = orientacion;
+		        	
+		        	/*
+		        	modelo.metadatos.metaLocalizacion[0] = hoja.getCell(5,fila).getContents();
+		        	modelo.metadatos.metaLocalizacion[1] = hoja.getCell(6,fila).getContents();
+		        	*/
+		        	
+		        	modelo.metadatos.metaServicio = hoja.getCell(6,fila).getContents();
+		        	modelo.metadatos.metaNombre =  hoja.getCell(7,fila).getContents();
+		        	modelo.metadatos.metaModelo =  hoja.getCell(8,fila).getContents();
+		        	modelo.metadatos.metaServicioNombre =  hoja.getCell(9,fila).getContents();
+		        	
+		        	if(modelo.metadatos.metaServicio.equals("")){
+		        		modelo.metadatos.metaServicio = "@";
+		        	}
+		        	if(modelo.metadatos.metaNombre.equals("")){
+		        		modelo.metadatos.metaNombre = "@";
+		        	}
+		        	if(modelo.metadatos.metaModelo.equals("")){
+		        		modelo.metadatos.metaModelo = "@";
+		        	}
+		        	if(modelo.metadatos.metaServicioNombre.equals("")){
+		        		modelo.metadatos.metaServicioNombre = "@";
+		        	}
+		        	
+		        	/*
+		        	for(int i=0;i<6;i++){
+		        		aux = hoja.getCell(10 + i ,fila).getContents();
+		        		if(aux == ""){
+		        			break;
+		        		}
+		        		else{
+		        			modelo.metadatos.metaAuxiliares.add(aux); 
+		        		}
+		        	}
+		        	*/
+		        	
+		        //	modelo.nombreAlternativo = hoja.getCell(21, fila).getContents();
+		        	modelo.instruccionesNHC = hoja.getCell(10,fila).getContents();
+		        	modelo.instruccionesCIP = hoja.getCell(11,fila).getContents();
+		        	modelo.instruccionesNSS = hoja.getCell(12,fila).getContents();
+		        	
+		        	
+		        	
+		        	listaModelos.add(modelo);
 	        	}
-	        	else if(aux.equals("A5")){
-	        		formato = -1;
-	        	}
-	        	else if(aux.equals("A3")){
-	        		formato = 1;
-	        	}
-	        	modelo.fisica.tamañoPagina = formato;
-	        	
-	        	aux = hoja.getCell(4,fila).getContents();
-	        	int orientacion = 0; // Por defecto vertical u horizontal
-	        	if(aux.equals("V")){
-	        		orientacion = 1;
-	        	}
-	        	else if(aux.equals("H")){
-	        		orientacion = 2;
-	        	}
-	        	modelo.fisica.vertical = orientacion;
-	        	
-	        	modelo.metadatos.metaLocalizacion[0] = hoja.getCell(5,fila).getContents();
-	        	modelo.metadatos.metaLocalizacion[1] = hoja.getCell(6,fila).getContents();
-	        	modelo.metadatos.metaServicio = hoja.getCell(7,fila).getContents();
-	        	modelo.metadatos.metaNombre =  hoja.getCell(8,fila).getContents();
-	        	modelo.metadatos.metaModelo =  hoja.getCell(9,fila).getContents();
-	        	modelo.metadatos.metaServicioNombre =  hoja.getCell(10,fila).getContents();
-	        	for(int i=0;i<6;i++){
-	        		aux = hoja.getCell(10 + i ,fila).getContents();
-	        		if(aux == ""){
-	        			break;
-	        		}
-	        		else{
-	        			modelo.metadatos.metaAuxiliares.add(aux); 
-	        		}
-	        	}
-	        	
-	        	modelo.nombreAlternativo = hoja.getCell(21, fila).getContents();
-	        	modelo.instruccionesNHC = hoja.getCell(24,fila).getContents();
-	        	
-	        	
-	        	listaModelos.add(modelo);
+
 
 	        }
+	        
+	        
+        	for(int i=0;i<listaModelos.size();i++){
+        		System.out.print(listaModelos.get(i).rutaImagen + "\t");
+        		System.out.print(listaModelos.get(i).nombreNormalizado + "\t");
+        		System.out.print(listaModelos.get(i).servicios.get(0) + "\t");
+        		
+        	}
+	        
 	        
         	archivoExcel.close();
 	        

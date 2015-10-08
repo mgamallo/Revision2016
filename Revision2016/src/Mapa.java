@@ -42,6 +42,7 @@ public class Mapa {
 		String dimensiones = "A4";
 	
 		try{
+			System.out.println(ruta);
 			PdfReader pdf = new PdfReader(ruta);
 			
 			textoPag1 = PdfTextExtractor.getTextFromPage(pdf, 1);

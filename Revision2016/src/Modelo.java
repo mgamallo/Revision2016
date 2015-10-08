@@ -11,9 +11,13 @@ public class Modelo {
 	
 	Metadatos metadatos = new Metadatos();
 	
-	String nombreAlternativo = "";
+//	String nombreAlternativo = "";
 	
 	String instruccionesNHC = "";
+	String instruccionesCIP = "";
+	String instruccionesNSS = "";
+	
+	boolean servicioFijo = false;
 	
 	void setMetadatos(){
 		
@@ -23,9 +27,12 @@ public class Modelo {
 		
 	}
 	
+
+	
 	void setServiciosModelo(String cadenaExcel){
-		if(!cadenaExcel.equals("0")){
+		if(!cadenaExcel.equals("0") && !cadenaExcel.equals("Todos")){
 			servicios.add(cadenaExcel);
+			servicioFijo = true;
 		}
 		else{
 			servicios.add("X");
@@ -42,8 +49,9 @@ class Metadatos{
 	String metaServicio = "";
 	String metaModelo = "";
 	
+	/*
 	ArrayList<String> metaAuxiliares = new ArrayList<String>();
-	
+	*/
 	
 	
 }

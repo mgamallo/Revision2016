@@ -1,6 +1,8 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -12,6 +14,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.imageio.ImageIO;
@@ -31,19 +35,24 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 
+
+
 public class InterfazVisorMeta extends JDialog{
 
 	/**
 	 * @param args
 	 */
 	
+	LeerExcelAyuda leerExcel;	
+	String tablaAyuda[][];
+	
 	
 	JComboBox comboMeta = new JComboBox();
-	JComboBox comboColor = new JComboBox();
-	JComboBox comboGrafico = new JComboBox();
-	JTextField texto = new JTextField(15);
+	// JComboBox comboColor = new JComboBox();
+	// JComboBox comboGrafico = new JComboBox();
+	// JTextField texto = new JTextField(15);
 	JButton botonBuscar = new JButton("Buscar");
-	JButton botonLimpiar = new JButton("Limpiar");
+	JButton botonSalir = new JButton("Salir");
 	
 	JLabel obsvLabel = new JLabel("Observaciones:");
 	JLabel contObsvLabel = new JLabel();
@@ -63,8 +72,13 @@ public class InterfazVisorMeta extends JDialog{
 	
 	InterfazVisorMeta(){
 		setTitle("Visor de metaDatos");
-		setModal(true);
+		setModal(false);
+		
 			
+		leerExcel = new LeerExcelAyuda();
+    	leerExcel.leerAyuda(Inicio.rutaHermes_XLS);
+		
+    	tablaAyuda = leerExcel.getTablaHermesAyuda();
 
 	    comboMeta.setBackground(new java.awt.Color(255, 204, 204));
 	    comboMeta.setMaximumRowCount(20);
@@ -73,131 +87,14 @@ public class InterfazVisorMeta extends JDialog{
 	    comboMeta.setSelectedIndex(0);
 	    comboMeta.addActionListener(new java.awt.event.ActionListener() {
 	            public void actionPerformed(java.awt.event.ActionEvent evt) {
-	            	String[] docmetaDatos;
-	            	docmetaDatos = Inicio.excel.getDocServicioVisor(comboMeta.getSelectedItem().toString());
-	
-	            	//	Obtiene el nombre de los Documentos
-	            	nombres = this.getDocumentosJpg();
-	            	int tamArray = nombres.size();
 
-	            	//	Obtiene la ruta de las imagenes
-	            	rutaJpgs = this.getRutaJpg();
-	            	tamArray = rutaJpgs.size();
-	            	
-	            	//	Obtiene las observaciones de cada documento
-	            	observaciones = this.getObservaciones();
-	            	          	
-	            	
-	            	int filas=0;
-	            	int numFotos = tamArray;
-	            	if(numFotos % 3 == 0){
-	            		filas = numFotos/3;
-	            	}else{
-	            		filas = numFotos/3 +1;
-	            	}
-	            	
-	            	Object[][] objetosM =new Object[filas][3];
-	            	Object[][] imagenesR = new Object[filas][3];
-	            	int fil=0;
-	            	int columnas=0;
-	            	int aux=0;
-	            	
-	            	for(int i=0;i<imagenesR.length;i++)
-	            		for(int j=0;j<3;j++)
-	            			imagenesR[i][j]="";
-	            	
-	            	while(aux < numFotos){
-	            		if(columnas ==3){
-	            			columnas = 0;
-	            			fil++;
-	            		}
-	            		objetosM[fil][columnas]= rutaJpgs.get(aux);
-	            		imagenesR[fil][columnas]= crearImagen(objetosM[fil][columnas].toString());
-	            		aux++;
-	            		columnas++;
-	            	}
-   	
-	    			filas = modelo.getRowCount();
-					for(int i=0;i<filas;i++){
-						modelo.removeRow(0);
-					}
-
-					filas = imagenesR.length;
-
-					aux=0;
-					int conteo=0;
-					Object[] v = new Object[3];
-					for(int i=0;i<filas;i++){
-						while(aux < 3 ){
-							if(conteo<numFotos){
-								v[aux] = new Object();
-								v[aux] = imagenesR[i][aux];
-								aux++;
-								conteo++;
-							}
-							else{
-								v[aux] = "";
-								aux++;
-							}
-						}
-						aux = 0;	
-						modelo.addRow(v);	
-					}
-	            }
-	            
-	        	//	Método para cargar la lista de nombres de los documentos que contienen el metadato
-	            private ArrayList<String> getDocumentosJpg() {
-					ArrayList<String> listaNombreDocumentos = new ArrayList<String>();
-					int numFilas = Inicio.excel.tablaVisor.length;
-					for(int i=1;i<numFilas;i++){
-						for(int j=6;j<12;j++){
-							if(Inicio.excel.tablaVisor[i][j].toString().contains(comboMeta.getSelectedItem().toString())){
-								listaNombreDocumentos.add(Inicio.excel.tablaVisor[i][1].toString());
-							}
-						}
-					}
-					
-					return listaNombreDocumentos;
-				}
-
-		
-	        	
-				//	Método para cargar la lista de rutas de los jpg que tienen el metadato
-				private ArrayList<String> getRutaJpg() {
-					ArrayList<String> listaRuta = new ArrayList<String>();
-					int numFilas = Inicio.excel.tablaVisor.length;
-
-					for(int i=1;i<numFilas;i++){
-						for(int j=6;j<12;j++){
-							if(Inicio.excel.tablaVisor[i][j].toString().contains(comboMeta.getSelectedItem().toString())){
-								listaRuta.add(Inicio.excel.tablaVisor[i][0].toString() + ".jpg");
-							}
-						}
-					}
-					
-					return listaRuta;
-				}
-				
-				//	Método para cargar la lista de observaciones de los documentos
-				private ArrayList<String> getObservaciones() {
-					ArrayList<String> listaObs = new ArrayList<String>();
-
-					int numFilas = Inicio.excel.tablaVisor.length;
-					for(int i=1;i<numFilas;i++){
-						for(int j=6;j<12;j++){
-							if(Inicio.excel.tablaVisor[i][j].toString().contains(comboMeta.getSelectedItem().toString())){
-							listaObs.add(Inicio.excel.tablaVisor[i][5].toString());
-							}
-						}
-					}
-					
-					return listaObs;
 				}
 				
 	        });
 		
 	    
 	//    comboColor.addItem("Color");
+	/*    
 	    comboColor.setModel(this.listaColor());
 	    comboColor.setMaximumRowCount(15);
 	    comboColor.setSelectedIndex(0);
@@ -322,6 +219,8 @@ public class InterfazVisorMeta extends JDialog{
 			
 	    });
 	    
+	    */
+	    /*
 	    comboGrafico.setModel(this.listaApariencia());
 	    comboGrafico.setMaximumRowCount(10);
 	    comboGrafico.setSelectedIndex(0);
@@ -443,21 +342,30 @@ public class InterfazVisorMeta extends JDialog{
 	              	
 	        });
 
+	    */
 	    
 	    botonBuscar.addActionListener(new ActionListener(){
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-            	buscar();
+            	buscar(comboMeta.getSelectedItem().toString());
             }
               	
         });
 
-	    botonLimpiar.addActionListener(new ActionListener(){
+	    
+	    botonSalir.addActionListener(new ActionListener(){
 	    	public void actionPerformed(java.awt.event.ActionEvent evt) {
+	    		// buscar("");
+	    		comboMeta.setSelectedIndex(0);
+	    		while(modelo.getRowCount() != 0){
+	    			modelo.removeRow(0);
+	    		}
 	    		
-	    		texto.setText("");
-	    		texto.grabFocus();	//	Transfiere el focus al jtextfield
+	    		Inicio.visorAyuda.setVisible(false);
+	    		setVisible(false);
 	    	}
 	    });
+	    
+	    
 	    modelo = new MyTableModel(imagenes,filaObjetos);
 
 	
@@ -478,7 +386,7 @@ public class InterfazVisorMeta extends JDialog{
 		JPanel panelSuperior = new JPanel();
 	//	panelSuperior.setLayout();
 
-		
+		/*
 		//	Si se presiona Enter se ejecuta el método buscar metadato
     	texto.addActionListener(new ActionListener(){
  			@Override
@@ -487,17 +395,20 @@ public class InterfazVisorMeta extends JDialog{
 				buscar();
 			}
     	});
+		*/
 		
 		panelSuperior.add(comboMeta);
-		panelSuperior.add(comboGrafico);
-		panelSuperior.add(comboColor);
-		panelSuperior.add(texto);
+	//	panelSuperior.add(comboGrafico);
+	//	panelSuperior.add(comboColor);
+	//	panelSuperior.add(texto);
 		panelSuperior.add(botonBuscar);
-		panelSuperior.add(botonLimpiar);
+		panelSuperior.add(botonSalir);
 		
+		/*
 		texto.setFont(new Font("Serif",Font.BOLD,18));
 		texto.setForeground(Color.blue);
 		texto.setEditable(true);
+		*/
 		
 		JPanel panelInferior = new JPanel();
 		panelInferior.setLayout(new BorderLayout());
@@ -534,13 +445,14 @@ public class InterfazVisorMeta extends JDialog{
 		panel.add(panelInferior,BorderLayout.SOUTH);
 		setContentPane(panel);
 
-		setSize(800,850);
+		setSize(800,900);
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 	//	pack();
 		this.setLocationRelativeTo(null);
-		setVisible(true);
-		texto.requestFocus();
+		
+		setVisible(false);
+		// texto.requestFocus();
 	}
 	
 	
@@ -553,13 +465,22 @@ public class InterfazVisorMeta extends JDialog{
 				int fil = tabla.rowAtPoint(e.getPoint());
 				int column = tabla.columnAtPoint(e.getPoint());
 				
+				/*
 				if(e.getClickCount() == 2){
-					Visor v = new Visor(nombres,rutaJpgs,fil*3+column,observaciones);
+					Inicio.visorAyuda = new Visor(nombres,rutaJpgs,fil*3+column,observaciones, rescaleImage(new File(rutaJpgs.get(fil*3+column)), 600, 800));
+					System.out.println(nombres.get(fil*3+column));
 				}
-				else{
-					texto.setText("     " + nombres.get(fil*3 + column));
+				*/
+				// else{
+				
+				//	texto.setText("     " + nombres.get(fil*3 + column));
+					Inicio.visorAyuda.setImagen(nombres, rutaJpgs, fil*3+column, observaciones, rescaleImage(new File(rutaJpgs.get(fil*3+column)), 600, 800));
+					Inicio.visorAyuda.setVisible(true);
+					
+					//= new Visor(nombres,rutaJpgs,fil*3+column,observaciones, rescaleImage(new File(rutaJpgs.get(fil*3+column)), 600, 800));
 					contObsvLabel.setText(observaciones.get(fil*3 + column));
-				}
+				//}
+				
 				Inicio.auxRutaImagen = rutaJpgs.get(fil*3 + column);
 			}
 
@@ -570,14 +491,69 @@ public class InterfazVisorMeta extends JDialog{
 	public ImageIcon crearImagen(String ruta){
 		BufferedImage miImagen;
 		try{
-			String rutaCompleta = "Imagenes\\250x350\\" + ruta;
+			String rutaCompleta = /* "Imagenes\\250x350\\"  + */ ruta;
 			miImagen = ImageIO.read(new File(rutaCompleta));
-			return new ImageIcon(miImagen);		
+			
+			return rescaleImage(new File(rutaCompleta),250,350);		
 		}catch(IOException e){
 			e.printStackTrace();
 			return null;
 		}
 	}	
+	
+	
+	public ImageIcon rescaleImage(File source, int maxWidth, int maxHeight){
+		
+		//int maxHeight = 350, maxWidth = 250;
+	    int newHeight = 0, newWidth = 0;        // Variables for the new height and width
+	    int priorHeight = 0, priorWidth = 0;
+	    BufferedImage image = null;
+	    ImageIcon sizeImage;
+
+	    try {
+	            image = ImageIO.read(source);        // get the image
+	    } catch (Exception e) {
+
+	            e.printStackTrace();
+	            System.out.println("Picture upload attempted & failed");
+	    }
+
+	    sizeImage = new ImageIcon(image);
+
+	    if(sizeImage != null)
+	    {
+	        priorHeight = sizeImage.getIconHeight(); 
+	        priorWidth = sizeImage.getIconWidth();
+	    }
+
+	    // Calculate the correct new height and width
+	    if((float)priorHeight/(float)priorWidth > (float)maxHeight/(float)maxWidth)
+	    {
+	        newHeight = maxHeight;
+	        newWidth = (int)(((float)priorWidth/(float)priorHeight)*(float)newHeight);
+	    }
+	    else 
+	    {
+	        newWidth = maxWidth;
+	        newHeight = (int)(((float)priorHeight/(float)priorWidth)*(float)newWidth);
+	    }
+
+
+	    // Resize the image
+
+	    // 1. Create a new Buffered Image and Graphic2D object
+	    BufferedImage resizedImg = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+	    Graphics2D g2 = resizedImg.createGraphics();
+
+	    // 2. Use the Graphic object to draw a new image to the image in the buffer
+	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    g2.drawImage(image, 0, 0, newWidth, newHeight, null);
+	    g2.dispose();
+
+	    // 3. Convert the buffered image into an ImageIcon for return
+	    return (new ImageIcon(resizedImg));
+	}
+
 	
 	
 	class MyTableModel extends DefaultTableModel{
@@ -598,186 +574,148 @@ public class InterfazVisorMeta extends JDialog{
 		  }
 	}
 	
-
-	//	Método para cargar la lista de graficos, fotos, cuadros...
-	DefaultComboBoxModel listaApariencia(){
-		DefaultComboBoxModel aparienciaDCBM = new DefaultComboBoxModel();
-		int numFilas = Inicio.excel.tablaVisor.length;
-
-		ArrayList<String> apariencias = new ArrayList();
-		for(int i=1;i<numFilas;i++){
-				apariencias.add(Inicio.excel.tablaVisor[i][4].toString());
-		}
-
-		HashSet<String> quitaDuplicados = new HashSet<String>();
-		quitaDuplicados.addAll(apariencias);
-		apariencias.clear();
-		apariencias.addAll(quitaDuplicados);
-		apariencias.remove("N");
-		apariencias.remove("");
-		Collections.sort(apariencias,String.CASE_INSENSITIVE_ORDER);
-		
-		numFilas = apariencias.size();
-		for(int i=0;i<numFilas;i++)
-			aparienciaDCBM.addElement(apariencias.get(i));
-		aparienciaDCBM.insertElementAt("Apariencia", 0);
-		return aparienciaDCBM;
-	}
-	
-	
-	//	Método para cargar la lista de colores
-	DefaultComboBoxModel listaColor(){
-		DefaultComboBoxModel colorDCBM = new DefaultComboBoxModel();
-		int numFilas = Inicio.excel.tablaVisor.length;
-
-		ArrayList<String> colores = new ArrayList();
-		for(int i=1;i<numFilas;i++){
-				colores.add(Inicio.excel.tablaVisor[i][3].toString());
-		}
-
-		HashSet<String> quitaDuplicados = new HashSet<String>();
-		quitaDuplicados.addAll(colores);
-		colores.clear();
-		colores.addAll(quitaDuplicados);
-		colores.remove("N");
-		colores.remove("");
-		Collections.sort(colores,String.CASE_INSENSITIVE_ORDER);
-
-
-		numFilas = colores.size();
-		for(int i=0;i<numFilas;i++)
-			colorDCBM.addElement(colores.get(i));
-		colorDCBM.insertElementAt("Color", 0);
-		return colorDCBM;
-	}
-	
 	
 	
 	//	Método para cargar la lista de documentos con metaDatos
 	DefaultComboBoxModel listaMeta(){
 		
+		
+		Inicio.indiceGeneralAyuda = Txt.leerIndiceTxt(Inicio.rutaHermes_TXT);
+		
 		DefaultComboBoxModel metaDatosDCBM = new DefaultComboBoxModel();
+		metaDatosDCBM.addElement("");
 		
-		int numFilas = Inicio.excel.tablaVisor.length;
-
-		ArrayList<String> metaDatos = new ArrayList();
-		
-		for(int i=1;i<numFilas;i++){
-			for(int j=6;j<12;j++){
-				metaDatos.add(Inicio.excel.tablaVisor[i][j].toString());
-			}
+		Iterator<String> it = Inicio.indiceGeneralAyuda.keySet().iterator();
+		while(it.hasNext()){
+		  String key = (String) it.next();
+		  System.out.println("Clave: " + key + " ->"); 
+		  for(int i=0;i<Inicio.indiceGeneralAyuda.get(key).indices.size();i++){
+			  System.out.println("   Valor: " + Inicio.indiceGeneralAyuda.get(key).indices.get(i));
+		  }
+		  
+		  metaDatosDCBM.addElement(key);
 		}
-		
-		HashSet<String> quitaDuplicados = new HashSet<String>();
-		quitaDuplicados.addAll(metaDatos);
-		metaDatos.clear();
-		metaDatos.addAll(quitaDuplicados);
-		metaDatos.remove("");
-		Collections.sort(metaDatos,String.CASE_INSENSITIVE_ORDER);	
 	
-		numFilas = metaDatos.size();
-		for(int i=0;i<numFilas;i++)
-			metaDatosDCBM.addElement(metaDatos.get(i));
-		metaDatosDCBM.insertElementAt("Selecciona palabra clave", 0);	
 		
 		return metaDatosDCBM;
 	}
 	
-	void buscar(){
-		String[] docmetaDatos;
-    	docmetaDatos = Inicio.excel.getDocServicioVisor(comboMeta.getSelectedItem().toString());
+	void buscar(String nombreABuscar){
+		
+		if(!nombreABuscar.equals("")){
+			int tamaño = Inicio.indiceGeneralAyuda.get(nombreABuscar).indices.size();
+			
+			ArrayList<RegistroAyuda> registrosEncontrados = new ArrayList<RegistroAyuda>();
+			
+			for(int i=0;i<tamaño;i++){
+				int fila = Integer.valueOf(Inicio.indiceGeneralAyuda.get(nombreABuscar).indices.get(i)) - 1;
+				System.out.println(Inicio.indiceGeneralAyuda.get(nombreABuscar).indices.get(i));
+				registrosEncontrados
+					.add(new RegistroAyuda(tablaAyuda[fila][0], tablaAyuda[fila][1], tablaAyuda[fila][9], tablaAyuda[fila][10]));
+			}
+			
+			for(int i=0;i<tamaño;i++){
+				
+				System.out.println("*****************************************************");
+				System.out.println(registrosEncontrados.get(i).getNombreDocumento());
+				System.out.println(registrosEncontrados.get(i).getRutaImagen());
+				System.out.println(registrosEncontrados.get(i).getServicios());
+				System.out.println(registrosEncontrados.get(i).getObservaciones());
+				System.out.println("*****************************************************");
+			}
+			
+			String[] docmetaDatos;
+	    	// docmetaDatos = Inicio.excel.getDocServicioVisor(comboMeta.getSelectedItem().toString());
 
-    	String nombreABuscar = texto.getText();
-    	
-    	if(!nombreABuscar.isEmpty()){
-        	
-        	//	Obtiene el nombre de los Documentos
-        	nombres = this.getDocumentosJpg(nombreABuscar);
-        	int tamArray = nombres.size();
-	
-        	//	Obtiene la ruta de las imagenes
-        	rutaJpgs = this.getRutaJpg(nombreABuscar);
-        	
-        	//	Obtiene las observaciones de cada documento
-        	observaciones = this.getObservaciones(nombreABuscar);      
-        	
-        	tamArray = rutaJpgs.size();
-        	
-        	if(tamArray == 0){
-        		JOptionPane.showMessageDialog(null, "No se ha encontrado ninguna coincidencia");
-        	}
-        	else{
-        		
+	    	// String nombreABuscar = texto.getText();
+	    	
+	    	if(!nombreABuscar.isEmpty()){
+	        	
+	        	//	Obtiene el nombre de los Documentos
+	        	nombres = this.getDocumentosJpg(registrosEncontrados);
+	        	int tamArray = nombres.size();
+		
+	        	//	Obtiene la ruta de las imagenes
+	        	rutaJpgs = this.getRutaJpg(registrosEncontrados);
+	        	
+	        	//	Obtiene las observaciones de cada documento
+	        	observaciones = this.getObservaciones(registrosEncontrados);      
+	        	
+	        	tamArray = rutaJpgs.size();
+	        	
+	        	if(tamArray == 0){
+	        		JOptionPane.showMessageDialog(null, "No se ha encontrado ninguna coincidencia");
+	        	}
+	        	else{
+	        		
 
-            	int filas=0;
-            	int numFotos = tamArray;
-            	if(numFotos % 3 == 0){
-            		filas = numFotos/3;
-            	}else{
-            		filas = numFotos/3 +1;
-            	}
-            	
-            	Object[][] objetosM =new Object[filas][3];
-            	Object[][] imagenesR = new Object[filas][3];
-            	int fil=0;
-            	int columnas=0;
-            	int aux=0;
-            	
-            	for(int i=0;i<imagenesR.length;i++)
-            		for(int j=0;j<3;j++)
-            			imagenesR[i][j]="";
-            	
-            	while(aux < numFotos){
-            		if(columnas ==3){
-            			columnas = 0;
-            			fil++;
-            		}
-            		objetosM[fil][columnas]= rutaJpgs.get(aux);
-            		imagenesR[fil][columnas]= crearImagen(objetosM[fil][columnas].toString());
-            		aux++;
-            		columnas++;
-            	}
-            	
-    			filas = modelo.getRowCount();
-				for(int i=0;i<filas;i++){
-					modelo.removeRow(0);
-				}
-
-				filas = imagenesR.length;
-
-				aux=0;
-				int conteo=0;
-				Object[] v = new Object[3];
-				for(int i=0;i<filas;i++){
-					while(aux < 3 ){
-						if(conteo<numFotos){
-							v[aux] = new Object();
-							v[aux] = imagenesR[i][aux];
-							aux++;
-							conteo++;
-						}
-						else{
-							v[aux] = "";
-							aux++;
-						}
+	            	int filas=0;
+	            	int numFotos = tamArray;
+	            	if(numFotos % 3 == 0){
+	            		filas = numFotos/3;
+	            	}else{
+	            		filas = numFotos/3 +1;
+	            	}
+	            	
+	            	Object[][] objetosM =new Object[filas][3];
+	            	Object[][] imagenesR = new Object[filas][3];
+	            	int fil=0;
+	            	int columnas=0;
+	            	int aux=0;
+	            	
+	            	for(int i=0;i<imagenesR.length;i++)
+	            		for(int j=0;j<3;j++)
+	            			imagenesR[i][j]="";
+	            	
+	            	while(aux < numFotos){
+	            		if(columnas ==3){
+	            			columnas = 0;
+	            			fil++;
+	            		}
+	            		objetosM[fil][columnas]= rutaJpgs.get(aux);
+	            		imagenesR[fil][columnas]= crearImagen(objetosM[fil][columnas].toString());
+	            		aux++;
+	            		columnas++;
+	            	}
+	            	
+	    			filas = modelo.getRowCount();
+					for(int i=0;i<filas;i++){
+						modelo.removeRow(0);
 					}
-					aux = 0;	
-					modelo.addRow(v);	
-				}
-        	}
-    	}
+
+					filas = imagenesR.length;
+
+					aux=0;
+					int conteo=0;
+					Object[] v = new Object[3];
+					for(int i=0;i<filas;i++){
+						while(aux < 3 ){
+							if(conteo<numFotos){
+								v[aux] = new Object();
+								v[aux] = imagenesR[i][aux];
+								aux++;
+								conteo++;
+							}
+							else{
+								v[aux] = "";
+								aux++;
+							}
+						}
+						aux = 0;	
+						modelo.addRow(v);	
+					}
+	        	}
+	    	}
+		}
+
     }
     
 	//	Método para cargar la lista de nombres de los documentos que contienen el metadato
-    private ArrayList<String> getDocumentosJpg(String nombreABuscar) {
+    private ArrayList<String> getDocumentosJpg(ArrayList<RegistroAyuda> registros) {
 		ArrayList<String> listaNombreDocumentos = new ArrayList<String>();
-		int numFilas = Inicio.excel.tablaVisor.length;
-		for(int i=1;i<numFilas;i++){
-			for(int j=6;j<12;j++){
-				if(Inicio.excel.tablaVisor[i][j].toString().toLowerCase().contains(nombreABuscar.toLowerCase())){
-					listaNombreDocumentos.add(Inicio.excel.tablaVisor[i][1].toString());
-				}
-			}
+		int numFilas = registros.size();
+		for(int i=0;i<numFilas;i++){
+			listaNombreDocumentos.add(registros.get(i).getNombreDocumento());
 		}
 		
 		return listaNombreDocumentos;
@@ -786,34 +724,32 @@ public class InterfazVisorMeta extends JDialog{
 
 	
 	//	Método para cargar la lista de rutas de los jpg que tienen el metadato
-	private ArrayList<String> getRutaJpg(String nombreABuscar) {
+	private ArrayList<String> getRutaJpg(ArrayList<RegistroAyuda> registros) {
+		
 		ArrayList<String> listaRuta = new ArrayList<String>();
-		int numFilas = Inicio.excel.tablaVisor.length;
-
-		for(int i=1;i<numFilas;i++){
-			for(int j=6;j<12;j++){
-				if(Inicio.excel.tablaVisor[i][j].toString().toLowerCase().contains(nombreABuscar.toLowerCase())){
-					listaRuta.add(Inicio.excel.tablaVisor[i][0].toString() + ".jpg");
-				}
-			}
+		int numFilas = registros.size();
+		for(int i=0;i<numFilas;i++){
+			listaRuta.add("J:/DIGITALIZACIÓN/00 DOCUMENTACION/99 Nombres Normalizados/Hermes/ImagenesPdfs/" 
+						+ registros.get(i).getRutaImagen() + ".jpg");
+			System.out.println(listaRuta.get(i));
 		}
 		
 		return listaRuta;
+
 	}
 	
 	//	Método para cargar la lista de observaciones de los documentos
-	private ArrayList<String> getObservaciones(String nombreABuscar) {
+	private ArrayList<String> getObservaciones(ArrayList<RegistroAyuda> registros) {
 		ArrayList<String> listaObs = new ArrayList<String>();
-		int numFilas = Inicio.excel.tablaVisor.length;
-		for(int i=1;i<numFilas;i++){
-			for(int j=6;j<12;j++){
-				if(Inicio.excel.tablaVisor[i][j].toString().toLowerCase().contains(nombreABuscar.toLowerCase())){
-				listaObs.add(Inicio.excel.tablaVisor[i][5].toString());
-				}
-			}
+		int numFilas = registros.size();
+		for(int i=0;i<numFilas;i++){
+			listaObs.add(registros.get(i).getObservaciones());
 		}
 		
 		return listaObs;
 	}
 	
+	public static void main(String args[]){
+		new InterfazVisorMeta();
+	}
 }

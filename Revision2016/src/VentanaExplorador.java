@@ -63,6 +63,8 @@ public class VentanaExplorador extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">
     private void initComponents() {
 
+ 
+                
         jScrollPane1 = new javax.swing.JScrollPane();
         listaPdfs = new javax.swing.JList();
         
@@ -106,9 +108,9 @@ public class VentanaExplorador extends javax.swing.JFrame {
         jMenuItem33 = new javax.swing.JMenuItem();			//	Guardar todo
         
         jMenuV = new JMenu("Ayuda");																	//	Documentos
-        jMenuItemV1 = new JMenuItem("Por Servicio");		jMenuItemV1.setEnabled(true);					//	Por Servicio
-        jMenuItemV2 = new JMenuItem("Por palabras clave");	jMenuItemV2.setEnabled(true);					//	Por palabra clave
-        jMenuItemV3 = new JMenuItem("Por nombre del documento");			jMenuItemV3.setEnabled(true);	//	Por nombre del documento
+       // jMenuItemV1 = new JMenuItem("Por Servicio");		jMenuItemV1.setEnabled(true);					//	Por Servicio
+        jMenuItemV2 = new JMenuItem("Ayuda");	jMenuItemV2.setEnabled(true);					//	Por palabra clave
+       // jMenuItemV3 = new JMenuItem("Por nombre del documento");			jMenuItemV3.setEnabled(true);	//	Por nombre del documento
         
         
         jMenuCalibre = new JMenu("Calibrar");				//	Menu Calibrar
@@ -239,320 +241,19 @@ public class VentanaExplorador extends javax.swing.JFrame {
         	jMenuItem53.setEnabled(false);
         jMenuItem53.setToolTipText("Al cerrar sesión, envía el contenido de dudas a la carpeta asociados");
          
-/*
-        jMenuItem52.addActionListener(new ActionListener(){				//	Abrir carpeta dudas
-        	public void actionPerformed(ActionEvent arg0){
-        		
-    			JOptionPane.showMessageDialog(null, "¡¡Aviso!! \n No renombrar los pdfs.El programa automáticamente elimina las observaciones " +
-    					"en el nombre del pdf a la hora de asociar.");
-
-    			VentanaExplorador.triggerVigo = false;
-        		
-        		String ruta = Inicio.RUTA;
-
-        		if(!(new File(ruta).exists())){
-        			ruta = Inicio.RUTAB;
-        		}
-        		File ficherosDudas = new File(ruta);
-        		if(ficherosDudas.exists()){
-	        		int ind = ruta.lastIndexOf("/");
-	        		String aux = ruta;
-	        		aux= ruta.substring(0, ind);
-	        		aux+= "/99 Dudas/" + Inicio.usuario + " C";
-	        		ficherosDudas = new File(aux);
-	        		if(ficherosDudas.exists()){
-	        			aux+= (" " + Inicio.usuario);
-	        			File directorioNuevo = new File(aux);
-	        			ficherosDudas.renameTo(directorioNuevo);
-	        			
-	        			FileFilter filtro = new FileFilter(){
-	        				public boolean accept(File fichero){
-	        					if(!fichero.isDirectory() && fichero.getName().endsWith("pdf")){
-	        						return true;
-	        					}
-	        					return false;
-	        				}
-	        			};
-	        			
-	        			File cargarDudas = new File(aux);
-	        			File[] pdfsDudas = cargarDudas.listFiles(filtro);
-	        			int tamaño = pdfsDudas.length;
-	        			tamañoLista= tamaño;
-	        			Inicio.rutaCompletaPdfs = new String[tamaño];
-	        			rutaCompletaPdfs = new String[tamaño];
-	        			Inicio.par=false;
-	        			
-	        			Inicio.modelo = new DefaultListModel();
-	        			objetoPuente = new Object[tamaño];
-	        			
-	        			for(int i=0;i<tamaño;i++){
-	        				//	Renombramos los ficheros, no los nombres de la lista
-	        				String renombre =pdfsDudas[i].getName();
-	        				int j= renombre.lastIndexOf("¿");
-	        				renombre=renombre.substring(j+2);
-	        				String nuevoPath = cargarDudas.getAbsolutePath() + "\\" + renombre;
-	        				//	System.out.println(nuevoPath);
-	        				
-	        				File viejoNombre = new File(pdfsDudas[i].getAbsolutePath());
-	        				File nuevoNombre = new File(nuevoPath);
-	        				if(!viejoNombre.renameTo(nuevoNombre)){
-	        					JOptionPane.showMessageDialog(null, "Error al renombrar el fichero. Asociar las dudas a mano.");
-	        					break;
-	        				}
-	        				
-	        				rutaCompletaPdfs[i] = nuevoPath;
-	        				Inicio.rutaCompletaPdfs[i] = nuevoPath;
-	        				objetoPuente[i] = renombre;
-	        				Inicio.modelo.addElement(pdfsDudas[i].getName());
-	        			//	Inicio.modelo.addElement(renombre);
-	        				
-	        			}
-	        			listaPdfs.setModel(Inicio.modelo);
-	        			setTitle("Dudas " + Inicio.usuario);
-	        		//	System.out.println("En construcción");
-	        			
-	        			Inicio.ficherosCargados=true;
-       		        	if(Inicio.ficherosCargados){
-		        			if(Inicio.ventanaRevisionAbierta == false){
-	       		        		java.awt.EventQueue.invokeLater(new Runnable() {
-		       		        		
-		    		        		public void run() {
-		    		        			jMenu5.getItem(2).setVisible(true);
-		    		        			jMenu2.setEnabled(true);
-		    		        			jMenu3.setEnabled(true);
-		    		        			jMenuItem53.setEnabled(true);
-		    		        			Inicio.ventanaD = new InterFazTabla();
-		    		        			Inicio.ventanaD.setVisible(true);
-		    		        		}
-		    		        	});
-		    		        	Inicio.ventanaRevisionAbierta = true;
-		           			}
-       		        	}
-	        		}
-        		}
-        	}
-        
-        	
-        });
-        
-        
-        jMenuItem54.addActionListener(new ActionListener(){				//	Consultar carpeta dudas
-        	public void actionPerformed(ActionEvent arg0){
-        		
-    			JOptionPane.showMessageDialog(null, "No se van a eliminar las observaciones " +
-    					"en el nombre del pdf.");
-
-    			VentanaExplorador.triggerVigo = false;
-        		
-        		String ruta = Inicio.RUTA;
-
-        		if(!(new File(ruta).exists())){
-        			ruta = Inicio.RUTAB;
-        		}
-        		File ficherosDudas = new File(ruta);
-        		if(ficherosDudas.exists()){
-	        		int ind = ruta.lastIndexOf("/");
-	        		String aux = ruta;
-	        		aux= ruta.substring(0, ind);
-	        		aux+= "/99 Dudas/" + Inicio.usuario + " C";
-	        		ficherosDudas = new File(aux);
-	        		if(ficherosDudas.exists()){
-
-	        			FileFilter filtro = new FileFilter(){
-	        				public boolean accept(File fichero){
-	        					if(!fichero.isDirectory() && fichero.getName().endsWith("pdf")){
-	        						return true;
-	        					}
-	        					return false;
-	        				}
-	        			};
-	        			
-	        			File cargarDudas = new File(aux);
-	        			File[] pdfsDudas = cargarDudas.listFiles(filtro);
-	        			int tamaño = pdfsDudas.length;
-	        			tamañoLista= tamaño;
-	        			Inicio.rutaCompletaPdfs = new String[tamaño];
-	        			rutaCompletaPdfs = new String[tamaño];
-	        			Inicio.par=false;
-	        			
-	        			Inicio.modelo = new DefaultListModel();
-	        			objetoPuente = new Object[tamaño];
-	        			
-	        			for(int i=0;i<tamaño;i++){
-	        				
-	        				rutaCompletaPdfs[i] = pdfsDudas[i].getAbsolutePath();
-	        				Inicio.rutaCompletaPdfs[i] = pdfsDudas[i].getAbsolutePath();
-	        				objetoPuente[i] = pdfsDudas[i].getName();
-	        				Inicio.modelo.addElement(pdfsDudas[i].getName());
-	        			//	Inicio.modelo.addElement(renombre);
-	        				
-	        			}
-	        			listaPdfs.setModel(Inicio.modelo);
-	        			setTitle("Dudas " + Inicio.usuario);
-	        		//	System.out.println("En construcción");
-	        			
-	        			Inicio.ficherosCargados=true;
-       		        	if(Inicio.ficherosCargados){
-		        			if(Inicio.ventanaRevisionAbierta == false){
-	       		        		java.awt.EventQueue.invokeLater(new Runnable() {
-		       		        		
-		    		        		public void run() {
-		    		        			jMenu5.getItem(2).setVisible(true);
-		    		        			jMenu2.setEnabled(true);
-		    		        			jMenu3.setEnabled(true);
-		    		        			jMenuItem53.setEnabled(true);
-		    		        			Inicio.ventanaD = new InterFazTabla();
-		    		        			Inicio.ventanaD.setVisible(true);
-		    		        		}
-		    		        	});
-		    		        	Inicio.ventanaRevisionAbierta = true;
-		           			}
-       		        	}
-	        		}
-        		}
-        	}
-        
-        	
-        });
-     
-        
-        
-     
-        jMenuItem53.addActionListener(new ActionListener(){				//	Enviar a carpeta asociados
-        	public void actionPerformed(ActionEvent arg0){
-        
-        			int confirmacion = JOptionPane.showConfirmDialog(null,"¿Confirmas que quieres archivar las dudas contestadas? " +
-        					"\nLa carpeta será movida una vez se guarde y cierre el programa. ","Confirmación",JOptionPane.OK_CANCEL_OPTION,JOptionPane.OK_OPTION);
-        			if(confirmacion == JOptionPane.OK_OPTION){
-            			Inicio.dudasParaAsociar = true;
-            			jMenuItem53.setEnabled(false);
-         			}
-        	}
-        });
-*/      
-        
-        
         
         jMenu2.setText("Incidencias");
         jMenu2.setEnabled(false);
         jMenu2.add(jMenuItem23);jMenuItem23.setEnabled(true);
         
  
- /*       
-     jMenuItem22.setVisible(false);
-        jMenuItem22.addActionListener(new ActionListener(){			//	Ya subidos
-
-			@Override
-			public void actionPerformed(ActionEvent evento) {
-				// TODO Auto-generated method stub
-				Object seleccion = JOptionPane.showInputDialog(null,"Seleccione el último documento subido","Documentos ya subidos",JOptionPane.QUESTION_MESSAGE,null,objetoPuente,listaPdfs.getSelectedValue());
-				if(seleccion.toString() != null){
-					CerrarTodo cerrar = new CerrarTodo();
-					cerrar.close();
-					
-	        		FicheroTXT fTxt = new FicheroTXT();										//	Guarda las estadisticas en un fichero txt
-	        		fTxt.escribeTXT();
-	        		
-	        		GestionEstadistica ge = new GestionEstadistica();						
-	        		GuardarEstadisticaSantiago ges = new GuardarEstadisticaSantiago();		//	Guarda las estadisticas en un fichero excel
-	        		ges.leerExcel(Inicio.NOMBRE_FICHERO_EXCEL_ESTADISTICA,false);
-					
-					int indice = objetoPuente.length;
-					int i=0;
-					while(!(objetoPuente[i].toString().contains(seleccion.toString()))&& i<indice){
-						i++;
-					}
-					MoverCarpetas mv = new MoverCarpetas();
-					mv.moverPdfs(Inicio.rutaCompletaPdfs[0].toString(),i);
-
-	            	mv.moverDudas();
-	            	if(Inicio.documentacion){
-	                	mv.mover();
-	            	}else{
-	            		mv.moverCarpetasUrg();
-	            	}
-					
-				}
-			}
-        	
-        });
-        
-        
-        jMenuItem23.addActionListener(new ActionListener(){			//	Enviar a carpeta "Apartado"	
-
-  			@Override
-  			public void actionPerformed(ActionEvent arg0) {
-  				// TODO Auto-generated method stub
-  				Object seleccion = JOptionPane.showInputDialog(null,"Selecciona el documento a enviar para apartar","Apartar documento",JOptionPane.QUESTION_MESSAGE,null,objetoPuente,listaPdfs.getSelectedValue());
-  				if(seleccion.toString() != null){
-  					Object comentario = JOptionPane.showInputDialog(null,"Escribe un breve comentario sobre porqué se aparta el documento","Anotación",JOptionPane.QUESTION_MESSAGE);
-  					if(comentario.toString() != null){
-  						CerrarTodo cerrar = new CerrarTodo();
-  						cerrar.closePdf();
-  				//		System.out.println(seleccion.toString());
-  						
-  						int indice = objetoPuente.length;
-  						int i=0;
-  						while(!(objetoPuente[i].toString().contains(seleccion.toString()))&& i<indice){
-  							i++;
-  						}
-  						MoverCarpetas mv = new MoverCarpetas();
-  						if(mv.moverPdf(i, comentario.toString(),true)){							//	true significa mover pdf a Apartados
-  							int j = Inicio.rutaCompletaPdfs[0].lastIndexOf("\\");
-  							if(j != 0){
-  								String ruta = Inicio.rutaCompletaPdfs[0].substring(0, j);
-  								
-  								FileFilter filtro = new FileFilter(){
-
-  									@Override
-  									public boolean accept(File fichero) {
-  										// TODO Auto-generated method stub
-  										
-  										if(!fichero.isDirectory() && fichero.getName().endsWith("pdf")){
-  											return true;
-  										}
-  										return false;
-  									}
-  								};
-  								
-  								File recargar = new File(ruta);
-  								File[] nuevosPdfs = recargar.listFiles(filtro);
-  								int tamaño = nuevosPdfs.length;
-  								
-  								Inicio.rutaCompletaPdfs = new String[tamaño];
-  								
-  								Inicio.modelo = new DefaultListModel();
-  								objetoPuente = new Object[nuevosPdfs.length];
-  																
-  								for(int k=0;k<nuevosPdfs.length;k++){
-  									objetoPuente[k] = nuevosPdfs[k].getName();
-  									Inicio.modelo.addElement(nuevosPdfs[k].getName());
-  									Inicio.rutaCompletaPdfs[k] = nuevosPdfs[k].getAbsolutePath().toString();
-  								}
-  								listaPdfs.setModel(Inicio.modelo);
-  							}
-  							
-  						}
-  					}
-  				}
-  			}
-          	
-          });
-        	
-*/            
+      
         jMenuItem31.setText("Guardar Carpetas");
         jMenuItem32.setText("Guardar Preferencias");
         jMenuItem33.setText("Guardar Todo");
         
         jMenuItem3.setText("Cerrar Sesión");
-  //      jMenu3.setToolTipText("Guarda las posiciones de las ventanas");
-   /*     jMenu3.add(jMenuItem22);
-        jMenu3.add(jSeparador01);
-        jMenu3.add(jMenuItem31);jMenuItem31.setToolTipText("Guarda en asociados todas las carpetas del usuario");
-        jMenu3.add(jMenuItem32);jMenuItem32.setToolTipText("Guarda las preferencias de localización y tamaño de las ventanas");
-        jMenu3.add(jMenuItem33);jMenuItem33.setToolTipText("Guarda las carpetas y las preferencias del usuario");
-        
-        */
+
         jMenuItem3.setEnabled(true);
         
         jMenuItem3.addActionListener(new ActionListener(){			//	Guardar preferencias
@@ -570,106 +271,16 @@ public class VentanaExplorador extends javax.swing.JFrame {
         });
         
  
-/*
-        jMenuItem31.addActionListener(new ActionListener(){			//	Guardar carpetas
-        	public void actionPerformed(ActionEvent evento){
-        		CerrarTodo cerrar = new CerrarTodo();
-    		
-        		FicheroTXT fTxt = new FicheroTXT();			//	Guarda las estadisticas en un fichero txt
-        		fTxt.escribeTXT();
-        		
-        		GestionEstadistica ge = new GestionEstadistica();						
-        		GuardarEstadisticaSantiago ges = new GuardarEstadisticaSantiago();		//	Guarda las estadisticas en un fichero excel
-        		ges.leerExcel(Inicio.NOMBRE_FICHERO_EXCEL_ESTADISTICA,false);
 
-               	MoverCarpetas mov = new MoverCarpetas();
-            	
-            	cerrar.close();
-            	mov.moverDudas();
-            	if(Inicio.documentacion){
-                	mov.mover();
-            	}else{
-            		mov.moverCarpetasUrg();
-            	}
-
-            	
-            	System.exit(0);
- 
-        		
-        	}
-        });
-        
-        jMenuItem32.addActionListener(new ActionListener(){			//	Guardar sólo preferencias
-        	public void actionPerformed(ActionEvent evento){
-        		CerrarTodo cerrar = new CerrarTodo();
-        		cerrar.close();
-				
-        		FicheroTXT fTxt = new FicheroTXT();			//	Guarda las estadisticas en un fichero txt
-        		fTxt.escribeTXT();
-        		
-           		GestionEstadistica ge = new GestionEstadistica();						
-        		GuardarEstadisticaSantiago ges = new GuardarEstadisticaSantiago();		//	Guarda las estadisticas en un fichero excel
-        		ges.leerExcel(Inicio.NOMBRE_FICHERO_EXCEL_ESTADISTICA,false);
-        		
-        		GuardarPreferencias gp = new GuardarPreferencias();
-				gp.guardar("Documentos.xls");
-				
-				System.exit(0);      		
-        		
-        	}
-        });       
-        
-       
-        jMenuItem33.addActionListener(										//	Guardar preferencias y carpetas
-	       		new ActionListener(){
-	    			public void actionPerformed(ActionEvent evento){
-	            		CerrarTodo cerrar = new CerrarTodo();
-	            		cerrar.close();
-	            		
-	            		FicheroTXT fTxt = new FicheroTXT();			//	Guarda las estadisticas en un fichero txt
-		        		fTxt.escribeTXT();
-	            		
-		           		GestionEstadistica ge = new GestionEstadistica();						
-		        		GuardarEstadisticaSantiago ges = new GuardarEstadisticaSantiago();		//	Guarda las estadisticas en un fichero excel
-		        		ges.leerExcel(Inicio.NOMBRE_FICHERO_EXCEL_ESTADISTICA,false);
-	            		
-	    				GuardarPreferencias gp = new GuardarPreferencias();
-	    				gp.guardar("Documentos.xls");
-	    				
-	    				cerrar.close();
-	                  	MoverCarpetas mov = new MoverCarpetas();
-	                	mov.moverDudas();
-	                	mov.mover();
-	    				
-	    				System.exit(0);
-	    			}
-	    			
-	        });
- */       
-        
-        jMenuV.add(jMenuItemV1);
-        jMenuItemV1.addActionListener(new ActionListener(){				//	Visor por Servicio
-        	public void actionPerformed(ActionEvent arg0){
-        		 cerrarAutoHotKey();
-        		 new InterfazVisor();
-        	}
-        });
         
         jMenuV.add(jMenuItemV2);     
         jMenuItemV2.addActionListener(new ActionListener(){				//	Visor por Metadatos
         	public void actionPerformed(ActionEvent arg0){
         		 cerrarAutoHotKey();
-        		 new InterfazVisorMeta();
+        		 Inicio.ventanaAyuda.setVisible(true);;
         	}
         });
         
-        jMenuV.add(jMenuItemV3);
-        jMenuItemV3.addActionListener(new ActionListener(){				//	Visor por nombreDocumento
-        	public void actionPerformed(ActionEvent arg0){
-        		 cerrarAutoHotKey();
-        		 new InterfazVisorNomDoc();
-        	}
-        });
 
  
         jMenuFirmar.setText("Firmar");
@@ -1055,6 +666,7 @@ public class VentanaExplorador extends javax.swing.JFrame {
         pack();
         setVisible(true);
         
+        
  //////////////////////   Borrrarrrr
   /*      
         Inicio.ventanaPrincipal = new VentanaPrincipal();
@@ -1098,7 +710,8 @@ public class VentanaExplorador extends javax.swing.JFrame {
  
     
     public void cerrarAutoHotKey(){
-  		if(Inicio.jBDeshabilitar.getText().equals("Teclas On")){
+    	    	
+  		if(Inicio.jBDeshabilitar != null && Inicio.jBDeshabilitar.getText().equals("Teclas On")){
   			String cmd = "taskkill.exe /F /IM FocoAcrobat.exe /T";
   			String cmd3 = "taskkill.exe /F /IM FocoAcrobat2.exe /T";
   			String cmdNHC = "taskkill.exe /F /IM FocoNHC.exe /T";
@@ -1225,9 +838,9 @@ public class VentanaExplorador extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemVigo;
     
     private JMenu jMenuV;
-    private JMenuItem jMenuItemV1;
+  //  private JMenuItem jMenuItemV1;
     private JMenuItem jMenuItemV2;
-    private JMenuItem jMenuItemV3;
+  //  private JMenuItem jMenuItemV3;
     private JSeparator jSeparadorV;
     private JMenuItem jMenuItemV4;
     
