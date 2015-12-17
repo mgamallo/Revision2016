@@ -36,7 +36,7 @@ public class TestLeerExcel {
 			listaDocumentos[i] = new Documento(abrir.pdfs[i].getAbsolutePath());
 			// System.out.println(listaDocumentos[i].cadenaOCR);
 			for(int j=0;j<modelos.size();j++){
-				if(listaDocumentos[i].detector(modelos.get(j),j)){
+				if(listaDocumentos[i].detector(modelos.get(j))){
 					break;
 				}
 					

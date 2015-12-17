@@ -5,7 +5,10 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.swing.DefaultListModel;
@@ -27,7 +30,7 @@ public class Inicio extends JFrame {
 	
 	static String RUTA = ":/digitalización/00 documentacion/01 Escaneado";
 //	static final String RUTAB = "h:/digitalización/00 documentacion/01 Escaneado";
-	static String RUTAURG ="j:/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)"; 
+	static String RUTAURG =":/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)"; 
 
 //	static final String RUTAURGB ="H:/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)";
 	static String RUTA_NO_RECONOCIDOS = ":/digitalización/00 documentacion/10 Registrar docs";
@@ -52,7 +55,9 @@ public class Inicio extends JFrame {
 
 	static boolean menuVertical = false;
 	
+	static final String SEPARADOR = "Separador";
 	static final String CONSENTIMIENTO = "Consentimento informado";
+	static final String INCLUSION = "Folla inclusión LE";
 	static final String EKG = "ECG";
 	static final String ECO = "Ecografía";
 	static final String ECOCARDIOGRAFIA = "Ecocardiografía";
@@ -68,6 +73,11 @@ public class Inicio extends JFrame {
 	public static final String CUIDADOS_INTENSIVOS = "Evolutivo enfermaría";
 	public static final String MAPA_DERMATOMAS = "Anamnese (Mapa dermatomas)";
 	public static final String ENFERMERIA_QUIRURGICA = "Folla enfermaría circulante";
+	public static final String ESPIROMETRIA = "Espirometría";
+	public static final String DENSITOMETRIA = "Densitometría centro externo";
+	public static final String ORDENES_MEDICAS = "Ordes médicas";
+	public static final String REGISTRO_ANESTESIA = "Rexistro anestesia";
+	public static final String INFORME_ALTA = "Informe alta";
 	
     public static final String CARC = "CARC";
     public static final String PEDC = "PEDC";
@@ -77,6 +87,7 @@ public class Inicio extends JFrame {
 	public static final String URG = "URG";
 	public static final String NRLC = "NRLC";
 	public static final String ORLC = "ORLC";
+	public static final String DIGC = "DIGC";
 	
 	public static final String ETMC = "ETMC";
 	public static final String DERC = "DERC";
@@ -143,6 +154,8 @@ public class Inicio extends JFrame {
     
     static Documento[] listaDocumentos;
     static ArrayList<Modelo> modelos = new ArrayList<Modelo>();
+    static ArrayList<Modelo> listaCompletaModelos = new ArrayList<Modelo>();
+    static Set<String> conjuntoClavesNhc = new HashSet<String>();
     static ArrayList<Integer> separadores;
 
     static DefaultListModel modelo;
@@ -246,6 +259,7 @@ public class Inicio extends JFrame {
 		rutaHermes_XLS = unidadHDD + rutaHermes_XLS;
 				
 		excel = new LeerExcel();
+
 		
 		// JOptionPane.showMessageDialog(null, "Empezamos a leer excel documentos");
 		System.out.println("Leemos documentos.xls");
@@ -289,7 +303,23 @@ public class Inicio extends JFrame {
 	
 	 //   modelos = excel.leerModelos("DocumentosOCR.xls", documentacionDeUrgencias);
 	    modelos = excel.leerModelos("Hermes.xls", documentacionDeUrgencias);
+	    listaCompletaModelos = excel.leerListaTotalModelos("Hermes.xls");
 		
+	    for(int i=0;i<listaCompletaModelos.size();i++){
+	    	if(!listaCompletaModelos.get(i).instruccionesNHC.equals("")){
+	    		conjuntoClavesNhc.add(listaCompletaModelos.get(i).instruccionesNHC);
+	    	}
+	    }
+	    
+	    /*
+	    System.out.println("Numero de elementos del conjunto: " + conjuntoClavesNhc.size());
+	    
+	    Iterator<String> it = conjuntoClavesNhc.iterator();
+	    while(it.hasNext()){
+	    	JOptionPane.showMessageDialog(null, it.next());
+	    }
+	    */
+	    
 		// System.out.println(modelos.get(83).instruccionesNHC);
 	    
 /*

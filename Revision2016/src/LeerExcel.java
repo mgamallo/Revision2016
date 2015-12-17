@@ -76,6 +76,8 @@ public class LeerExcel {
 			
             tablaCoordenadas = new Object[numFilas][numColumnas];
             
+            System.out.println("Longitud de la la tablacoordenadas " + tablaCoordenadas.length);
+            
             //	Leer coordenadas usuarios
             for (int fila=0;fila<numFilas-1;fila++){
                 for(int columna=0;columna<numColumnas;columna++){
@@ -388,6 +390,146 @@ public class LeerExcel {
 	}
 	
 	
+	public ArrayList<Modelo> leerListaTotalModelos(String archivo){
+
+		ArrayList<Modelo> listaModelos = new ArrayList<Modelo>();
+		
+		
+		try {
+			
+			
+			
+			WorkbookSettings wbSettings = new WorkbookSettings();
+	        wbSettings.setEncoding("ISO-8859-1");
+	        wbSettings.setLocale(new Locale("es", "ES"));
+	        wbSettings.setExcelDisplayLanguage("ES"); 
+	        wbSettings.setExcelRegionalSettings("ES"); 
+	        wbSettings.setCharacterSet(CountryCode.SPAIN.getValue());
+		
+	        Workbook archivoExcel = Workbook.getWorkbook(new File(archivo));
+	        
+			
+	        int hojaExcel = 1;
+	        
+	        
+	        
+	        Sheet hoja = archivoExcel.getSheet(hojaExcel);
+	        int numColumnas = 12;
+	        int numFilas = 0;
+	        
+	        while(!hoja.getCell(0,numFilas).getContents().toString().equals("ultimo")){
+	        	numFilas++;
+	        }
+	       // numFilas--;
+	        
+	        for(int fila=1;fila<numFilas;fila++){
+	        	Modelo modelo = new Modelo();
+	        	
+	        	// System.out.println("Fila... " + fila);
+	        	
+	        		
+		        	modelo.rutaImagen = hoja.getCell(0,fila).getContents();
+		        	modelo.nombreNormalizado = hoja.getCell(1,fila).getContents();
+		        	modelo.setServiciosModelo(hoja.getCell(2,fila).getContents());
+		        	
+		        	modelo.numImagen = Integer.valueOf(modelo.rutaImagen.substring(6));
+		        	
+		        	String aux = hoja.getCell(4,fila).getContents();
+		        	int formato = 3;  // Formato o A4, o A5 por defecto
+		        	if(aux.equals("A4")){
+		        		formato = 0;
+		        	}
+		        	else if(aux.equals("A5")){
+		        		formato = -1;
+		        	}
+		        	else if(aux.equals("A3")){
+		        		formato = 1;
+		        	}
+		        	modelo.fisica.tamañoPagina = formato;
+		        	
+		        	aux = hoja.getCell(3,fila).getContents();
+		        	int orientacion = 0; // Por defecto vertical u horizontal
+		        	if(aux.equals("Vertical")){
+		        		orientacion = 1;
+		        	}
+		        	else {
+		        		orientacion = 2;
+		        	}
+		        	modelo.fisica.vertical = orientacion;
+		        	
+		        	/*
+		        	modelo.metadatos.metaLocalizacion[0] = hoja.getCell(5,fila).getContents();
+		        	modelo.metadatos.metaLocalizacion[1] = hoja.getCell(6,fila).getContents();
+		        	*/
+		        	
+		        	modelo.metadatos.metaServicio = hoja.getCell(6,fila).getContents();
+		        	modelo.metadatos.metaNombre =  hoja.getCell(7,fila).getContents();
+		        	modelo.metadatos.metaModelo =  hoja.getCell(8,fila).getContents();
+		        	modelo.metadatos.metaServicioNombre =  hoja.getCell(9,fila).getContents();
+		        	
+		        	if(modelo.metadatos.metaServicio.equals("")){
+		        		modelo.metadatos.metaServicio = "@";
+		        	}
+		        	if(modelo.metadatos.metaNombre.equals("")){
+		        		modelo.metadatos.metaNombre = "@";
+		        	}
+		        	if(modelo.metadatos.metaModelo.equals("")){
+		        		modelo.metadatos.metaModelo = "@";
+		        	}
+		        	if(modelo.metadatos.metaServicioNombre.equals("")){
+		        		modelo.metadatos.metaServicioNombre = "@";
+		        	}
+		        	
+		        	/*
+		        	for(int i=0;i<6;i++){
+		        		aux = hoja.getCell(10 + i ,fila).getContents();
+		        		if(aux == ""){
+		        			break;
+		        		}
+		        		else{
+		        			modelo.metadatos.metaAuxiliares.add(aux); 
+		        		}
+		        	}
+		        	*/
+		        	
+		        //	modelo.nombreAlternativo = hoja.getCell(21, fila).getContents();
+		        	modelo.instruccionesNHC = hoja.getCell(10,fila).getContents();
+		        	modelo.instruccionesCIP = hoja.getCell(11,fila).getContents();
+		        	modelo.instruccionesNSS = hoja.getCell(12,fila).getContents();
+		        	
+		        	
+		        	
+		        	listaModelos.add(modelo);
+
+
+
+	        }
+	        
+	        
+        	for(int i=0;i<listaModelos.size();i++){
+        		System.out.print(listaModelos.get(i).rutaImagen + "\t");
+        		System.out.print(listaModelos.get(i).nombreNormalizado + "\t");
+        		System.out.print(listaModelos.get(i).servicios.get(0) + "\t");
+        		
+        	}
+	        
+	        
+        	archivoExcel.close();
+	        
+	        return listaModelos;
+	        
+		} catch (BiffException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        return null;			
+
+	}
+	
 	public ArrayList<Modelo> leerModelos(String archivo, boolean documentacionDeUrgencias){
 
 		ArrayList<Modelo> listaModelos = new ArrayList<Modelo>();
@@ -438,6 +580,8 @@ public class LeerExcel {
 		        	modelo.rutaImagen = hoja.getCell(0,fila).getContents();
 		        	modelo.nombreNormalizado = hoja.getCell(1,fila).getContents();
 		        	modelo.setServiciosModelo(hoja.getCell(2,fila).getContents());
+		        	
+		        	modelo.numImagen = Integer.valueOf(modelo.rutaImagen.substring(6));
 		        	
 		        	String aux = hoja.getCell(4,fila).getContents();
 		        	int formato = 3;  // Formato o A4, o A5 por defecto
@@ -630,6 +774,9 @@ public class LeerExcel {
 	
     
     Point[] getPreferencias(String nombreUser, int numPantallas){
+    	
+    	System.out.println(tablaCoordenadas.length);
+    	
    	 int numUsers = tablaCoordenadas.length;
    	 Point[] parejaCoordenadas = new Point[6];
    	 for(int i= 0;i<6;i++)
@@ -645,6 +792,14 @@ public class LeerExcel {
    		 indiceIntegral= 23;
    		 indice = 10;
    	 } 	 
+   	 
+   	 /*
+   	 System.out.println("Número de usuarios " + numUsers);
+   	 System.out.println("Número de filas " + tablaCoordenadas.length);
+   	 for(int i=0;i<numUsers;i++){
+   		 System.out.println(tablaCoordenadas[i][0]);
+   	 }
+   	 */
    	 
    	 for(int i=0;i<numUsers;i++){
    	//	 System.out.println(tablaCoordenadas[i][0]);

@@ -729,8 +729,7 @@ public class InterfazVisorMeta extends JDialog{
 		ArrayList<String> listaRuta = new ArrayList<String>();
 		int numFilas = registros.size();
 		for(int i=0;i<numFilas;i++){
-			listaRuta.add("J:/DIGITALIZACIÓN/00 DOCUMENTACION/99 Nombres Normalizados/Hermes/ImagenesPdfs/" 
-						+ registros.get(i).getRutaImagen() + ".jpg");
+			listaRuta.add(Inicio.rutaHermes + "\\"+ registros.get(i).getRutaImagen() + ".jpg");
 			System.out.println(listaRuta.get(i));
 		}
 		

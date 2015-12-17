@@ -417,6 +417,8 @@ public class VentanaCompacta extends javax.swing.JFrame {
 				Inicio.jBServiciop.setText("Eliminar");
 				Inicio.jBNombreDoc.setText("Eliminar");
 				Inicio.jBNombreDocp.setText("Eliminar");
+				Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+				Inicio.utiles.encajarNombreNormalizado();
 
 				Inicio.jBNHC.setBackground(Color.gray);
 				Inicio.jBNHCp.setBackground(Color.gray);
@@ -558,6 +560,8 @@ public class VentanaCompacta extends javax.swing.JFrame {
 		Inicio.jBServiciop.setText("Apartar");
 		Inicio.jBNombreDoc.setText("Apartar");
 		Inicio.jBNombreDocp.setText("Apartar");
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+		Inicio.utiles.encajarNombreNormalizado();
 
 		Inicio.jBNHC.setBackground(Color.gray);
 		Inicio.jBNHCp.setBackground(Color.gray);
@@ -610,6 +614,8 @@ public class VentanaCompacta extends javax.swing.JFrame {
 		Inicio.jBServiciop.setText("");
 		Inicio.jBNombreDoc.setText("");
 		Inicio.jBNombreDocp.setText("");
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+		Inicio.utiles.encajarNombreNormalizado();
 	}
 
 	// Variables declaration - do not modify
@@ -704,6 +710,8 @@ public class VentanaCompacta extends javax.swing.JFrame {
 					// if(Inicio.listaDocumentos[Inicio.numeroPdf].fisica.numPaginas
 					// <= 2){
 					Inicio.jBNombreDocp.setText(Inicio.EKG);
+					Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+					Inicio.utiles.encajarNombreNormalizado();
 					Inicio.jBNombreDoc.setText(Inicio.EKG);
 					if(Inicio.documentacionDeUrgencias){
 						Inicio.jBServiciop.setText(Inicio.URG);

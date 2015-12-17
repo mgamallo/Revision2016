@@ -276,7 +276,7 @@ public class VentanaExplorador extends javax.swing.JFrame {
         jMenuV.add(jMenuItemV2);     
         jMenuItemV2.addActionListener(new ActionListener(){				//	Visor por Metadatos
         	public void actionPerformed(ActionEvent arg0){
-        		 cerrarAutoHotKey();
+        		Inicio.utiles.habilitarTeclas(Inicio.jBDeshabilitar.getText(),Inicio.visualizacion);
         		 Inicio.ventanaAyuda.setVisible(true);;
         	}
         });
@@ -564,7 +564,8 @@ public class VentanaExplorador extends javax.swing.JFrame {
     			   Inicio.jBNHCp.setText(Inicio.listaDocumentos[numArchivo].nhc);
     			   Inicio.jBServiciop.setText(Inicio.listaDocumentos[numArchivo].servicio);
     			   Inicio.jBNombreDocp.setText(Inicio.listaDocumentos[numArchivo].nombreNormalizado);
-        			
+    			   Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+    			   Inicio.utiles.encajarNombreNormalizado();
     			   
     			   if(Inicio.listaDocumentos[Inicio.numeroPdf].semaforoAmarilloServicio == true){
     				   Inicio.jBServicio.setBackground(Color.yellow);
@@ -817,8 +818,6 @@ public class VentanaExplorador extends javax.swing.JFrame {
 	
 			
 			VentanaProgreso vprogreso = new VentanaProgreso(pdfs, visualizacion);
-			
-
 			
 		}
     }

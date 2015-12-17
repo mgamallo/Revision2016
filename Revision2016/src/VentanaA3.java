@@ -130,6 +130,8 @@ public class VentanaA3 extends javax.swing.JFrame {
 
         //  Inicio.jBNombreDocp.setEnabled(false);
         Inicio.jBNombreDocp.setText(Inicio.URPA);
+        Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+        Inicio.utiles.encajarNombreNormalizado();
         Inicio.jBNombreDocp.setBackground(Color.pink);
         Inicio.jBNombreDocp.setFont(new java.awt.Font("Serif", 1, 20)); // NOI18N
 
@@ -170,6 +172,9 @@ public class VentanaA3 extends javax.swing.JFrame {
         jList1.addMouseListener(new MouseAdapter() {
         	public void mouseClicked(MouseEvent e){
         		Inicio.jBNombreDocp.setText(jList1.getSelectedValue().toString());
+        		
+        		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+        		Inicio.utiles.encajarNombreNormalizado();
         	}
 		});
         
@@ -247,6 +252,8 @@ public class VentanaA3 extends javax.swing.JFrame {
 				Inicio.jBServiciop.setText("Eliminar");
 				Inicio.jBNombreDoc.setText("Eliminar");
 				Inicio.jBNombreDocp.setText("Eliminar");
+				Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+				Inicio.utiles.encajarNombreNormalizado();
 
 				Inicio.jBNHC.setBackground(Color.gray);
 				Inicio.jBNHCp.setBackground(Color.gray);
@@ -441,6 +448,8 @@ public class VentanaA3 extends javax.swing.JFrame {
 		Inicio.jBServiciop.setText("Apartar");
 		Inicio.jBNombreDoc.setText("Apartar");
 		Inicio.jBNombreDocp.setText("Apartar");
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+		Inicio.utiles.encajarNombreNormalizado();
 
 		Inicio.jBNHC.setBackground(Color.gray);
 		Inicio.jBNHCp.setBackground(Color.gray);
@@ -849,6 +858,8 @@ public class VentanaA3 extends javax.swing.JFrame {
 					// if(Inicio.listaDocumentos[Inicio.numeroPdf].fisica.numPaginas
 					// <= 2){
 					Inicio.jBNombreDocp.setText(Inicio.EKG);
+					Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+					Inicio.utiles.encajarNombreNormalizado();
 					Inicio.jBNombreDoc.setText(Inicio.EKG);
 					Inicio.jBServiciop.setText(Inicio.CARC);
 					Inicio.jBServicio.setText(Inicio.CARC);

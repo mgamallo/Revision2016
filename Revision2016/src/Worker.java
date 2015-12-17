@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
@@ -44,7 +45,7 @@ class Worker extends SwingWorker<Double, Integer>{
 	
 	
 	@Override
-	protected Double doInBackground() throws Exception {
+	protected Double doInBackground() {
 		// TODO Auto-generated method stub
 		
 		int tamaño = pdfs.nombrePdfs.length;
@@ -67,45 +68,115 @@ class Worker extends SwingWorker<Double, Integer>{
 		}
 		
 		for(int i=0;i<aux;i++){
+			
+			System.out.println(Inicio.listaDocumentos[i].cadenaOCR);
+
+			JOptionPane.showMessageDialog(null, Inicio.listaDocumentos[i].cadenaOCR);
+			
+			boolean find = false;
 			for(int j=0;j<tamModelos;j++){
-				if(Inicio.listaDocumentos[i].detector(Inicio.modelos.get(j),j)){
+				if(Inicio.listaDocumentos[i].detector(Inicio.modelos.get(j),1)){
+					find = true;
 					break;
 				}
 			}
-			// publish( Porcentaje NHC, PorcentajeDocumentos, PorcentajeServicios, PorcentajeRenombrar, nº de pdf)
+			
+			for(int j=0;j<tamModelos && !find;j++){
+				if(Inicio.listaDocumentos[i].detector(Inicio.modelos.get(j),2)){
+					find = true;
+					break;
+				}
+			}
+			
+			for(int j=0;j<tamModelos && !find;j++){
+				if(Inicio.listaDocumentos[i].detector(Inicio.modelos.get(j),3)){
+					find = true;
+					break;
+				}
+			}
 
+			// publish( Porcentaje NHC, PorcentajeDocumentos, PorcentajeServicios, PorcentajeRenombrar, nº de pdf)
+			// System.out.println("*************************************************************");
 			System.out.println("Pdf número nhc..." + i );
 			publish( 0,i*100/aux,0,0,i);
 		}
 		
 		System.out.println("Segunda tanda de reconocimiento...");
+
 		
+	//	JOptionPane.showMessageDialog(null, "Prueba nhc");
+		
+		
+		try {
+			for(int i=0;i<aux;i++){
+				
+				Inicio.listaDocumentos[i].escanerNHC(Inicio.listaDocumentos[i].numeroModelo);
+				Inicio.listaDocumentos[i].nhc = esNumerico(Inicio.listaDocumentos[i].nhc);
+				
+				//	JOptionPane.showMessageDialog(null, "Documento... " + i + "  " + Inicio.listaDocumentos[i].nhc);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Error... ");
+			JOptionPane.showMessageDialog(null, "Error");
+		}
+		
+	//	JOptionPane.showMessageDialog(null, "Fin Prueba nhc");
+		
+		/*
 		for(int i=0;i<aux;i++){
-			for(int j=0;j<tamModelos;j++){
-				if(Inicio.listaDocumentos[i].reDetectorNHC(Inicio.modelos.get(j))){
-					break;
+			
+			if(Inicio.listaDocumentos[i].nhc.equals("NO")){
+				int lim = Inicio.listaDocumentos[i].cadenaOCR.length();
+				if(lim > 300){
+					lim = 300;
+				}
+				
+	//			JOptionPane.showMessageDialog(null, Inicio.listaDocumentos[i].cadenaOCR.substring(0,lim));
+				
+				for(int j=0;j<tamModelos;j++){
+					if(Inicio.listaDocumentos[i].reDetectorNHC(Inicio.modelos.get(j))){
+						break;
+					}
 				}
 			}
+			
+			
+
 		}
+		*/
+
 		
 		// Tercera tanda de reconocimiento solo para urgencias
 		for(int i=0;i<aux;i++){
 				Inicio.listaDocumentos[i].reDetectorNHCUrgencias();
 		}
 		
+		
 		// Reconocimientos varios
 		for(int i=0;i<aux;i++){
-			 Inicio.listaDocumentos[i].nhc = NHC.nhcTriaje143(Inicio.listaDocumentos[i]);
+			 
+			// Inicio.listaDocumentos[i].nhc = NHC.nhcTriaje143(Inicio.listaDocumentos[i]);
+			 
+			if(NHC.borrarNHC(Inicio.listaDocumentos[i])){
+				 Inicio.listaDocumentos[i].nhc = "NO";
+			}
 		}
+		
 		
 		//	Reconocimiento de ekg´s y ecos
 		
 		for(int i=0;i<aux;i++){
+			
+			// JOptionPane.showMessageDialog(null, Inicio.listaDocumentos[i].nhc);
+			
 			Inicio.listaDocumentos[i].detectaEcos();
 			Inicio.listaDocumentos[i].detectaEKGs();
 			Inicio.listaDocumentos[i].detectaMonitor();
 			Inicio.listaDocumentos[i].detectaDocRosa();
-			
+			if(Inicio.listaDocumentos[i].nhc.equals("Separador"))
+				Inicio.listaDocumentos[i].nombreNormalizado = "X";
 			
 			System.out.println("Publico... " + i);
 			
@@ -423,4 +494,27 @@ class Worker extends SwingWorker<Double, Integer>{
         textoPdfExaminado.setText(file.getName());
     }
 	
+	
+	String esNumerico(String s){
+		
+		if(!s.equals(Inicio.SEPARADOR)){
+			
+			try {
+				int in = Integer.parseInt(s);
+				if(in > 0 && in < 2400000){
+					return String.valueOf(in);
+				}
+				else{
+					return "ERROR";
+				}
+				
+			} catch (NumberFormatException nfe){	
+				// JOptionPane.showMessageDialog(null, s);
+				return "ERROR";
+			}
+		}
+		
+		return Inicio.SEPARADOR;
+
+	}
 }

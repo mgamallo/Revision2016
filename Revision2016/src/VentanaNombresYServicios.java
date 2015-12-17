@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -126,12 +127,16 @@ public class VentanaNombresYServicios extends JFrame{
 		
 		Inicio.jBNombreDoc.setText(Inicio.jLNombresDoc.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setText(Inicio.jLNombresDoc.getSelectedValue().toString());
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
 		Inicio.jBNombreDoc.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDoc.setIcon(null);
 		Inicio.jBNombreDocp.setIcon(null);
 		jListHabituales1.clearSelection();
 		jListHabituales2.clearSelection();
+		
+		Inicio.listaDocumentos[Inicio.numeroPdf].modificado = true;
+		JOptionPane.showMessageDialog(null, "modificado");
 		
 		new FocalAdobe(100);
 	}
@@ -142,6 +147,7 @@ public class VentanaNombresYServicios extends JFrame{
 				.toString());
 		Inicio.jBNombreDocp.setText(jListHabituales1.getSelectedValue()
 				.toString());
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
 		Inicio.jBNombreDoc
 				.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp
@@ -151,6 +157,9 @@ public class VentanaNombresYServicios extends JFrame{
 		Inicio.jLNombresDoc.clearSelection();
 		jListHabituales2.clearSelection();
 		
+		Inicio.listaDocumentos[Inicio.numeroPdf].modificado = true;
+		JOptionPane.showMessageDialog(null, "modificado");
+		
 		new FocalAdobe(100);
 	}
 	
@@ -159,12 +168,16 @@ public class VentanaNombresYServicios extends JFrame{
 		
 		Inicio.jBNombreDoc.setText(jListHabituales2.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setText(jListHabituales2.getSelectedValue().toString());
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
 		Inicio.jBNombreDoc.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDoc.setIcon(null);
 		Inicio.jBNombreDocp.setIcon(null);
 		jListHabituales1.clearSelection();
 		Inicio.jLNombresDoc.clearSelection();
+		
+		Inicio.listaDocumentos[Inicio.numeroPdf].modificado = true;
+		JOptionPane.showMessageDialog(null, "modificado");
 		
 		new FocalAdobe(100);
 	}
@@ -194,6 +207,7 @@ public class VentanaNombresYServicios extends JFrame{
 					Inicio.listaDocumentos[Inicio.numeroPdf].nombreNormalizado = "Quirófano";
 					Inicio.jBNombreDoc.setText(Inicio.listaDocumentos[Inicio.numeroPdf].nombreNormalizado);
 					Inicio.jBNombreDocp.setText(Inicio.listaDocumentos[Inicio.numeroPdf].nombreNormalizado);
+					Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
 				}
 			}
 			if(Inicio.jBServicio.getText().equals(Inicio.HOSP)){
@@ -201,6 +215,7 @@ public class VentanaNombresYServicios extends JFrame{
 					Inicio.listaDocumentos[Inicio.numeroPdf].nombreNormalizado = Inicio.HOSPITALIZACION;
 					Inicio.jBNombreDoc.setText(Inicio.listaDocumentos[Inicio.numeroPdf].nombreNormalizado);
 					Inicio.jBNombreDocp.setText(Inicio.listaDocumentos[Inicio.numeroPdf].nombreNormalizado);
+					Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
 				}
 			}
 		}

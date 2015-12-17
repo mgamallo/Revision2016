@@ -358,7 +358,9 @@ public class VentanaIntegral extends javax.swing.JFrame {
     			   
     			   Inicio.jBNombreDoc.setText(Inicio.listaDocumentos[numArchivo].nombreNormalizado);
      			   Inicio.jBNombreDocp.setText(Inicio.listaDocumentos[numArchivo].nombreNormalizado);
-    			   if(Inicio.listaDocumentos[numArchivo].nombreNormalizado.equals("X") ){
+     			   Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+     			  Inicio.utiles.encajarNombreNormalizado();
+     			   if(Inicio.listaDocumentos[numArchivo].nombreNormalizado.equals("X") ){
     				   Inicio.jBNombreDoc.setBackground(Color.red);
     				   Inicio.jBNombreDocp.setBackground(Color.red);
     			   }
@@ -375,7 +377,8 @@ public class VentanaIntegral extends javax.swing.JFrame {
     			   Inicio.jBNHCp.setText(Inicio.listaDocumentos[numArchivo].nhc);
     			   Inicio.jBServiciop.setText(Inicio.listaDocumentos[numArchivo].servicio);
     			   Inicio.jBNombreDocp.setText(Inicio.listaDocumentos[numArchivo].nombreNormalizado);
-        			
+    			   Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+    			   Inicio.utiles.encajarNombreNormalizado();
     			   
     			   if(Inicio.listaDocumentos[Inicio.numeroPdf].semaforoAmarilloServicio == true){
     				   Inicio.jBServicio.setBackground(Color.yellow);
@@ -513,7 +516,16 @@ public class VentanaIntegral extends javax.swing.JFrame {
 				if(!Inicio.jBServicio.equals("X") && !Inicio.jBServicio.equals(Inicio.DES)){
 					Inicio.utiles.renombraServicios();	
 					Inicio.jLServicios.setSelectedValue(Inicio.jBServicio.getText(), true);
-					Inicio.jLNombresDoc.setModel(Inicio.excel.getDocServicio(Inicio.jBServicio.getText()));
+					if(Inicio.A3 && (Inicio.jBServiciop.getText().equals(Inicio.HOSP) || Inicio.jBServiciop.getText().equals(Inicio.CIA))){
+							DefaultListModel modelo = new DefaultListModel();
+							modelo.addElement(Inicio.CUIDADOS_INTENSIVOS);
+							modelo.addElement(Inicio.URPA);
+							
+							Inicio.jLNombresDoc.setModel(modelo);
+					}
+					else{
+						Inicio.jLNombresDoc.setModel(Inicio.excel.getDocServicio(Inicio.jBServicio.getText()));
+					}
 				}
 				jPanel1.requestFocus();
 				new Acrobat().getFocus();
@@ -574,7 +586,21 @@ public class VentanaIntegral extends javax.swing.JFrame {
    				// TODO Auto-generated method stub
    				
    				Inicio.jLServicios.setSelectedValue(Inicio.HOSP, true);
-   				Inicio.jLNombresDoc.setModel(Inicio.excel.getDocServicio(Inicio.HOSP));
+   				/*
+   				if(!Inicio.A3){
+   					Inicio.jLNombresDoc.setModel(Inicio.excel.getDocServicio(Inicio.HOSP));
+   					System.out.println("No a3");
+   				}
+   				else{
+   					DefaultListModel modelo = new DefaultListModel();
+   					modelo.addElement(Inicio.CUIDADOS_INTENSIVOS);
+   					modelo.addElement(Inicio.URPA);
+   					
+   					Inicio.jLNombresDoc.setModel(modelo);
+   					jScrollNombresDoc.setViewportView(Inicio.jLNombresDoc);
+   					System.out.println("Sólo a3");
+   				}
+   				*/
    				Inicio.utiles.actualizaServicio();
    				jPanel1.requestFocus();
    				new Acrobat().getFocus();
@@ -673,6 +699,8 @@ public class VentanaIntegral extends javax.swing.JFrame {
 				Inicio.jBServiciop.setText("Eliminar");
 				Inicio.jBNombreDoc.setText("Eliminar");
 				Inicio.jBNombreDocp.setText("Eliminar");
+				Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+				Inicio.utiles.encajarNombreNormalizado();
 
 				Inicio.jBNHC.setBackground(Color.gray);
 				Inicio.jBNHCp.setBackground(Color.gray);
@@ -1012,6 +1040,8 @@ public class VentanaIntegral extends javax.swing.JFrame {
 				.toString());
 		Inicio.jBNombreDocp.setText(jListHabituales1.getSelectedValue()
 				.toString());
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+		Inicio.utiles.encajarNombreNormalizado();
 		Inicio.jBNombreDoc
 				.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp
@@ -1029,6 +1059,8 @@ public class VentanaIntegral extends javax.swing.JFrame {
 		
 		Inicio.jBNombreDoc.setText(jListHabituales2.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setText(jListHabituales2.getSelectedValue().toString());
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+		Inicio.utiles.encajarNombreNormalizado();
 		Inicio.jBNombreDoc.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDoc.setIcon(null);
@@ -1044,6 +1076,8 @@ public class VentanaIntegral extends javax.swing.JFrame {
 		
 		Inicio.jBNombreDoc.setText(Inicio.jLNombresDoc.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setText(Inicio.jLNombresDoc.getSelectedValue().toString());
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+		Inicio.utiles.encajarNombreNormalizado();
 		Inicio.jBNombreDoc.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDoc.setIcon(null);
@@ -1086,7 +1120,6 @@ public class VentanaIntegral extends javax.swing.JFrame {
 	
 			
 			VentanaProgreso vprogreso = new VentanaProgreso(pdfs, visualizacion);
-			
 
 			
 		}
@@ -1252,6 +1285,8 @@ public class VentanaIntegral extends javax.swing.JFrame {
 					// if(Inicio.listaDocumentos[Inicio.numeroPdf].fisica.numPaginas
 					// <= 2){
 					Inicio.jBNombreDocp.setText(Inicio.EKG);
+					Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+					Inicio.utiles.encajarNombreNormalizado();
 					Inicio.jBNombreDoc.setText(Inicio.EKG);
 					if(Inicio.documentacionDeUrgencias){
 						Inicio.jBServiciop.setText("URG");

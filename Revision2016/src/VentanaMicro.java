@@ -1,6 +1,8 @@
 import java.awt.Color;
+import java.awt.MenuItem;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -21,6 +23,7 @@ public class VentanaMicro extends javax.swing.JFrame implements MouseListener {
 	private Point coordenadasRaton = new Point();
 
 	public KeyListener listener;
+
 	
 	/**
      * Creates new form VentanaMicro
@@ -75,6 +78,10 @@ public class VentanaMicro extends javax.swing.JFrame implements MouseListener {
         Inicio.jBNombreDocp.setPreferredSize(new java.awt.Dimension(360, 60));
         Inicio.jBNombreDocp.setMinimumSize(new java.awt.Dimension(360, 60));
         Inicio.jBNombreDocp.setFont(new java.awt.Font("Serif", 1, 36)); // NOI18N
+        Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+        Inicio.utiles.encajarNombreNormalizado();
+        
+                
         
         listener = new KeyListener() {
     		@Override
@@ -120,6 +127,8 @@ public class VentanaMicro extends javax.swing.JFrame implements MouseListener {
     					// if(Inicio.listaDocumentos[Inicio.numeroPdf].fisica.numPaginas
     					// <= 2){
     					Inicio.jBNombreDocp.setText(Inicio.EKG);
+    					Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+    					Inicio.utiles.encajarNombreNormalizado();
     					Inicio.jBNombreDoc.setText(Inicio.EKG);
     					if(Inicio.documentacionDeUrgencias){
     						Inicio.jBServiciop.setText(Inicio.URG);

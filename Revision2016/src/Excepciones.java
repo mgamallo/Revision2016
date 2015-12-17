@@ -12,11 +12,17 @@ public class Excepciones {
 			
 			return true;
 		}
-		if(Inicio.listaDocumentos[numPdf].nombreNormalizado.equals(Inicio.CRIBADO)){
+		else if(Inicio.listaDocumentos[numPdf].nombreNormalizado.equals(Inicio.CRIBADO)){
 			Inicio.listaDocumentos[numPdf].servicio = Inicio.ORLC;
 			
 			System.out.println("Esta es una excepción al ingreso");
 			
+			return true;
+		}
+		else if(Inicio.listaDocumentos[numPdf].servicio.equals(Inicio.DIGC)){
+			return true;
+		}
+		else if(Inicio.listaDocumentos[numPdf].nombreNormalizado.equals(Inicio.INCLUSION)){
 			return true;
 		}
 

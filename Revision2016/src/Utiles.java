@@ -7,13 +7,25 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
 
 public class Utiles {
 	
 	
-
+	public void encajarNombreNormalizado(){
+		String cadena = Inicio.jBNombreDocp.getText();
+		// JOptionPane.showMessageDialog(null, "Hola");
+		if(cadena.length() > 20){
+			Inicio.jBNombreDocp.setFont(new java.awt.Font("Serif", 1, 24));
+			// JOptionPane.showMessageDialog(null, "Mayor de 20");
+		}
+		else{
+			Inicio.jBNombreDocp.setFont(new java.awt.Font("Serif", 1, 36));
+			// JOptionPane.showMessageDialog(null, "Menor de 20");
+		}
+	}
 
 
 	public void ventanaRenombrarServicios() {
@@ -127,7 +139,17 @@ public class Utiles {
 			Inicio.ventanaMicro.jBServiciom.setBackground(new java.awt.Color(153, 255, 153));
 		}
 		*/
-		Inicio.jLNombresDoc.setModel(Inicio.excel.getDocServicio(Inicio.jBServicio.getText()));
+	
+		if(Inicio.A3 && (Inicio.jBServiciop.getText().equals(Inicio.HOSP) || Inicio.jBServiciop.getText().equals(Inicio.CIA))){
+			DefaultListModel modelo = new DefaultListModel();
+			modelo.addElement(Inicio.CUIDADOS_INTENSIVOS);
+			modelo.addElement(Inicio.URPA);
+			
+			Inicio.jLNombresDoc.setModel(modelo);
+		}
+		else{
+			Inicio.jLNombresDoc.setModel(Inicio.excel.getDocServicio(Inicio.jBServicio.getText()));
+		}
 		
 		Inicio.jBServicio.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBServiciop.setBackground(new java.awt.Color(153, 255, 153));
@@ -231,6 +253,37 @@ public class Utiles {
 		    			
 	    			}
 	    			else{
+	    					    		
+		 				//	Si el nombre fue modificado se guarda una copia
+	    				if(Inicio.listaDocumentos[i].modificado && Inicio.listaDocumentos[i].fisica.tamañoPagina != 1 ){
+	    					
+	    					File carpeta = new File(Inicio.listaDocumentos[i].rutaArchivo);
+	    					carpeta = carpeta.getParentFile();
+	    					
+	    					String nombreCarpeta = carpeta.getName();
+	    					
+	    					if(!nombreCarpeta.toLowerCase().contains("scanner") 
+	    							|| !nombreCarpeta.toLowerCase().contains("scaner")
+	    							|| !nombreCarpeta.toLowerCase().contains("a3") ){
+		    					System.out.println();
+		    					String rutaMalReconocidos = Inicio.RUTA_NO_RECONOCIDOS + "/Equivocados/" + nombreCarpeta ;
+		    					File direct = new File(rutaMalReconocidos);
+		    					direct.mkdirs();
+		    					rutaMalReconocidos += ("/" + nombreAntiguo.getName());
+		    					
+		    					System.out.println("Doc. No reconocido...");
+		    					System.out.println("RutaOriginal... " + "\t" + Inicio.listaDocumentos[i].rutaArchivo);
+		    					System.out.println("RutaNoRecono... " + "\t" + rutaMalReconocidos);
+		    					
+		    					CopiarFichero.copiar(Inicio.listaDocumentos[i].rutaArchivo, rutaMalReconocidos);
+	    					}
+	    					
+
+	    				}
+	    				
+	    				
+	    				
+	    				
 	    				String rutaNueva = Inicio.listaDocumentos[i].registraFichero();
 	    				System.out.println("Nombre Nuevo final con fecha: ");
 	    				System.out.println(rutaNueva);
@@ -242,6 +295,10 @@ public class Utiles {
 		    			else{
 		    				System.out.println("Error al renombrar");
 		    			}
+		    			
+		    			
+
+		    			
 	    			}
 	    			
 	    			
@@ -300,7 +357,8 @@ public class Utiles {
 	    	Inicio.jBServiciop.setText("");
 	    	Inicio.jBNombreDoc.setText("");
 	    	Inicio.jBNombreDocp.setText("");
-
+	    	Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+	    	Inicio.utiles.encajarNombreNormalizado();
     			
     		}
 
@@ -371,6 +429,8 @@ public class Utiles {
 		Inicio.jBServiciop.setText("Apartar");
 		Inicio.jBNombreDoc.setText("Apartar");
 		Inicio.jBNombreDocp.setText("Apartar");
+		Inicio.utiles.encajarNombreNormalizado();
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
 		
 		/*
 		if(Inicio.menuVertical){

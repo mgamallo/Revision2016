@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.JOptionPane;
 
@@ -40,6 +41,8 @@ public class Documento {
 	Boolean semaforoAmarilloNombre = false;
 	Boolean semaforoAmarilloNhc = false;
 	
+	Boolean modificado = false;   // Saber si reconoció mal el documento
+	
 	Mapa mapa;
 	
 	Documento(String rutaArchivo){
@@ -59,7 +62,7 @@ public class Documento {
 	}
 	
 	void setNumeroModelo(int imagen, String columna){
-		numeroModelo = (imagen+1) + columna;
+		numeroModelo = (imagen) + columna;
 	}
 	
 	boolean reDetectorNHCUrgencias(){
@@ -104,14 +107,20 @@ public class Documento {
 		//System.out.println("Imprimimos nhc: " + nhc);
 		if(nhc.contains("ERROR") || nhc.contains("NO")){
 			//System.out.println("Instrucciones: " + modelo.instruccionesNHC);
-			if(!modelo.instruccionesNHC.equals("@")){
+			if(!modelo.instruccionesNHC.equals("")){
 											
 				int limiteCadena = cadenaOCR.length();
-				if(limiteCadena > 200)
-					limiteCadena =  200;
+				if(limiteCadena > 300)
+					limiteCadena =  300;
 				String subCadena = cadenaOCR.substring(0, limiteCadena);
 				
-				//System.out.println(subCadena);
+				System.out.println("Buscando nhc:");
+				System.out.println("Palabra clave... " + modelo.instruccionesNHC);
+				System.out.println(subCadena);
+				
+				// JOptionPane.showMessageDialog(null, subCadena);
+				
+				
 				int contador = subCadena.indexOf(modelo.instruccionesNHC);
 								
 				//System.out.println("El numero del contador: " + contador);
@@ -120,7 +129,7 @@ public class Documento {
 					
 					System.out.println("El dato clave es... " + modelo.instruccionesNHC);
 					
-					contador = contador + modelo.instruccionesNHC.length() + 1;
+					contador = contador + modelo.instruccionesNHC.length() /* + 1 */;
 					if(contador >= subCadena.length()){
 						contador = subCadena.length() - 1;
 					}
@@ -173,19 +182,423 @@ public class Documento {
 	}
 	
 	
-	boolean detector(Modelo modelo, int numero){
+	boolean escanerNHC(String numeroModelo){
+		
+		
+		ArrayList<ParClaveNumero> listaNumeros = new ArrayList<ParClaveNumero>();
+		
+		//System.out.println("Imprimimos nhc: " + nhc);
+		// JOptionPane.showMessageDialog(null, "Imprimimos nhc: " + nhc);
+		if(nhc.contains("ERROR") || nhc.contains("NO")){
+			//System.out.println("Instrucciones: " + modelo.instruccionesNHC);
+			
+			
+			int limiteCadena = cadenaOCR.length();
+			String subCadena;
+			if(limiteCadena > 300){
+				subCadena = cadenaOCR.substring(0, 300);
+				limiteCadena = subCadena.length();
+			}
+			else{
+				subCadena = cadenaOCR;
+			}
+
+			if(nombreNormalizado.equals(Inicio.DENSITOMETRIA)){
+				limiteCadena = cadenaOCR.length();
+				if(limiteCadena > 500){
+					subCadena = cadenaOCR.substring(0, 500);
+					limiteCadena = subCadena.length();
+				}
+				else{
+					subCadena = cadenaOCR;
+				}
+			}
+			
+			boolean inicio = false;
+			String numero = "";
+			int indiceFin = 0;
+			String clave = "";
+			
+		//	JOptionPane.showMessageDialog(null, subCadena );
+			
+			for(int i=0;i<limiteCadena;i++){
+				char caracter = subCadena.charAt(i);
+				if((caracter >= '0' && caracter <= '9') || caracter == '.'){
+					if(inicio){
+						numero += String.valueOf(caracter);
+					}
+					else{
+						if(caracter != '.'){
+							inicio = true;
+							numero = String.valueOf(caracter);
+						}
+						
+					}
+				}
+				else{
+					if(inicio){
+						if(clave.length()>16){
+							clave = clave.substring(clave.length()- 15);
+						}
+
+						listaNumeros.add(new ParClaveNumero(clave, numero, indiceFin));
+						inicio = false;
+						clave = "";
+						numero = "";
+					}
+					else{
+						clave += String.valueOf(caracter);
+					}
+				}
+				
+				
+			}
+			
+			
+			for(int i=0;i<listaNumeros.size();i++){
+				System.out.println(listaNumeros.get(i).clave + "  " + listaNumeros.get(i).numero);
+			}
+			
+		//	JOptionPane.showMessageDialog(null, "Fin obtener numeros" );
+			
+			boolean encontrado = false;
+			
+			if(numeroModelo.length()>0){
+				int i = Integer.valueOf(numeroModelo.substring(0,numeroModelo.length()-1));
+				System.out.println("Número de modelo .... " + i);
+				
+				System.out.println("Instrucciones... " + Inicio.listaCompletaModelos.get(i-1).instruccionesNHC);
+				System.out.println("Longitud Instrucciones... " + Inicio.listaCompletaModelos.get(i-1).instruccionesNHC.length());
+				if(Inicio.listaCompletaModelos.get(i-1).instruccionesNHC.length() > 0){
+					for(int z=0;z<listaNumeros.size();z++){
+						if(listaNumeros.get(z).clave.contains(Inicio.listaCompletaModelos.get(i-1).instruccionesNHC)){
+						//	JOptionPane.showMessageDialog(null, listaNumeros.get(z).numero);
+							
+							if(esNumerico(numeroSinPunto(listaNumeros.get(z).numero))){
+								nhc = numeroSinPunto(listaNumeros.get(z).numero);
+								encontrado = true;
+								break;
+							}
+
+						}
+					}
+				}
+
+			}
+			
+			
+			// JOptionPane.showMessageDialog(null, nombreNormalizado + "  " + encontrado + "  " + nhc);
+			// JOptionPane.showMessageDialog(null, subCadena);
+			
+			if(!encontrado){
+				
+				// JOptionPane.showMessageDialog(null, encontrado + "  " + listaNumeros.size());
+				
+				for(int z=0;z<listaNumeros.size();z++){
+					Iterator<String> it = Inicio.conjuntoClavesNhc.iterator();
+					while(it.hasNext() && !encontrado){
+						String cl = it.next();
+						
+						if(listaNumeros.get(z).clave.contains(cl)){
+							// JOptionPane.showMessageDialog(null, listaNumeros.get(z).clave + " es la clave de " + listaNumeros.get(z).numero);
+							
+							// JOptionPane.showMessageDialog(null, listaNumeros.get(z).clave + " es la clave de " + listaNumeros.get(z).numero);
+							// JOptionPane.showMessageDialog(null, numeroModelo);
+							 
+							 if(numeroModelo.length() > 0){
+									int i = Integer.valueOf(numeroModelo.substring(0,numeroModelo.length()-1));
+									
+									if(!( Inicio.listaCompletaModelos.get(i-1).nombreNormalizado.equals(Inicio.ESPIROMETRIA) &&
+											cl.equals("Nombre:"))){
+										String aux = listaNumeros.get(z).numero;
+										
+										aux = compruebaErrores(aux, subCadena, cl);
+										if(esNumerico(numeroSinPunto(aux))){
+											nhc = numeroSinPunto(aux);
+											encontrado = true;
+											break;
+										}
+										
+									//	encontrado = true;
+										
+									//	JOptionPane.showMessageDialog(null, subCadena);
+									//	JOptionPane.showMessageDialog(null, nhc);
+										
+									}
+									else{
+										int in = 0;
+										int valMaximo = 0;
+										for(int k=0;k<listaNumeros.size();k++){
+											if(listaNumeros.get(k).numero.length() > valMaximo){
+												in = k;
+												valMaximo = listaNumeros.get(k).numero.length();
+											}
+										}
+										String aux = listaNumeros.get(in).numero;
+										aux = compruebaErrores(aux, subCadena, cl);
+										
+										if(esNumerico(numeroSinPunto(aux))){
+											nhc = numeroSinPunto(aux);
+											encontrado = true;
+											semaforoAmarilloNhc = true;
+										}
+									//	JOptionPane.showMessageDialog(null, subCadena);
+									//	JOptionPane.showMessageDialog(null, nhc);
+										
+									}
+							 }
+							 /*
+							 else{
+								 JOptionPane.showMessageDialog(null, "Seguimos buscando");
+								
+								int in = 0;
+								int valMaximo = 0;
+								for(int k=0;k<listaNumeros.size();k++){
+									if(listaNumeros.get(k).numero.length() > valMaximo){
+										in = k;
+										valMaximo = listaNumeros.get(k).numero.length();
+									}
+								}
+								nhc = listaNumeros.get(in).numero;
+								JOptionPane.showMessageDialog(null, nhc);
+								encontrado = true;
+							}
+							 */
+							 
+						}
+					}
+					
+					
+					if(!encontrado && nombreNormalizado.equals(Inicio.EKG)){
+						int in = 0;
+						int valMaximo = 0;
+						for(int k=0;k<listaNumeros.size();k++){
+							if(listaNumeros.get(k).numero.length() > valMaximo){
+								in = k;
+								valMaximo = listaNumeros.get(k).numero.length();
+							}
+						}
+						
+						String aux = listaNumeros.get(in).numero;
+						
+						if(esNumerico(numeroSinPunto(aux))){
+							nhc = numeroSinPunto(aux);
+							encontrado = true;
+							semaforoAmarilloNhc = true;
+						}
+					}
+					
+					if(!encontrado){
+						int in = 0;
+						int valMaximo = 0;
+						for(int k=0;k<listaNumeros.size();k++){
+							if(listaNumeros.get(k).numero.length() > valMaximo){
+								in = k;
+								valMaximo = listaNumeros.get(k).numero.length();
+							}
+						}
+						
+						
+						if(esNumerico(numeroSinPunto(listaNumeros.get(in).numero))){
+							int numer = Integer.valueOf(numeroSinPunto(listaNumeros.get(in).numero));
+							
+							if((numer > 999 && numer < 700000) || (numer > 1999999 && numer < 2290000)){
+								nhc = listaNumeros.get(in).numero;
+								// JOptionPane.showMessageDialog(null, nhc);
+								
+								if(nhc.equals("1986")){
+									if(subCadena.contains("/1986")){
+										nhc = "NO";
+									}
+								}
+								else{
+									semaforoAmarilloNhc = true;
+								}
+								
+								encontrado = true;
+								
+							}
+						}
+
+						
+					}
+					
+					
+					
+				}
+			}
+			
+	/*
+			System.out.println("Inicio " + numeroModelo);
+			for(int i=0;i<listaNumeros.size();i++){
+				System.out.println(listaNumeros.get(i).clave + "   " + listaNumeros.get(i).numero);
+			}
+			System.out.println("Fin");
+			System.out.println("");
+	*/
+		}
+		return false;
+	}
+	
+	String compruebaErrores(String nhc, String cadena, String clave){
+		
+	//	JOptionPane.showMessageDialog(null,nhc);
+		
+		// Errores posteriores al nhc
+		int indicePosterior = nhc.length();
+		indicePosterior = cadena.indexOf(nhc) + indicePosterior;
+		char c = cadena.charAt(indicePosterior);
+		
+		// JOptionPane.showMessageDialog(null,"Posterior... " + cadena.substring(indicePosterior));
+		
+		if(c != ' ' && c != 10 ){
+			nhc = nhc + "ERROR";
+			return nhc;
+		}
+		
+		// Errores anteriores al nhc
+		int indiceAnterior = cadena.indexOf(nhc);
+		int indiceFinclave = clave.length();
+		indiceFinclave = cadena.indexOf(clave) + indiceFinclave;
+		
+		
+	//	JOptionPane.showMessageDialog(null,"Anterior... " + cadena.substring(indiceFinclave,indiceAnterior));
+		
+		for(int i=indiceFinclave;i<indiceAnterior;i++){
+			c = cadena.charAt(i);
+			if(!cadena.contains(".") && c != ' ' && c != 10 ){
+				nhc = "ERROR" + nhc;
+				return nhc;
+			}
+			else if(cadena.contains(".")){
+				String aux = "";
+				for(int j=0;j<nhc.length();j++){
+					c = nhc.charAt(j);
+					if(c != '.'){
+						aux += c;
+					}
+				}
+				return aux;
+			}
+		}
+		
+		String aux = "";
+		for(int i=0;i<nhc.length();i++){
+			c = nhc.charAt(i);
+			if(c != '.'){
+				aux += c;
+			}
+		}
+		/*
+		if(aux.equals("1986")){
+			if(cadena.contains("/1986")){
+				return "NO";
+			}
+			
+		}
+		*/
+		return aux;
+	}
+	
+	String numeroSinPunto(String posibleNumero){
+		
+		String aux = "";
+		for(int i=0;i<posibleNumero.length(); i++){
+			char c = posibleNumero.charAt(i);
+			if(c != '.'){
+				aux += c;
+			}
+		}
+		
+		return aux;
+	}
+	
+	boolean esNumerico(String s){
+		try {
+			Integer.parseInt(s);
+			return true;
+		} catch (NumberFormatException nfe){	
+			return false;
+		}
+	}
+	
+	
+	boolean detector(Modelo modelo, int colum) { // column = 1, servynombre;
+													// column = 2, nombre;
+													// column = 3, modelo
+/*
+		System.out.println(modelo.numImagen + "  " + modelo.nombreNormalizado
+				+ "  " + modelo.servicioFijo + " "
+				+ modelo.metadatos.metaServicioNombre);
+*/	
+		if (!nhc.equals("Separador")) {
+
+			if (colum == 1 && !modelo.metadatos.metaServicioNombre.equals("@")) {
+
+				if (cadenaOCR.contains(modelo.metadatos.metaServicioNombre)) {
+					nombreNormalizado = modelo.nombreNormalizado;
+					servicio = modelo.servicios.get(0);
+					// System.out.println("Caso 0: " +modelo.fisica.tamañoPagina
+					// + " = " + fisica.tamañoPagina);
+					System.out.println("Se encontró por esta palabra: "
+							+ modelo.metadatos.metaServicioNombre);
+					System.out.println("El número de imagen es... "
+							+ modelo.numImagen);
+					setNumeroModelo(modelo.numImagen, "A");
+
+					return true;
+				}
+
+			} else if (colum == 2 && !modelo.metadatos.metaNombre.equals("@")) {
+				if (cadenaOCR.contains(modelo.metadatos.metaNombre)) {
+					nombreNormalizado = modelo.nombreNormalizado;
+					// System.out.println("Caso 1: " +modelo.fisica.tamañoPagina
+					// + " = " + fisica.tamañoPagina);
+					System.out.println("Se encontró por esta palabra: "
+							+ modelo.metadatos.metaNombre);
+					setNumeroModelo(modelo.numImagen, "B");
+
+					return true;
+				}
+
+			} else if (colum == 3 && !modelo.metadatos.metaModelo.equals("@")) {
+				if (cadenaOCR.contains(modelo.metadatos.metaModelo)) {
+					nombreNormalizado = modelo.nombreNormalizado;
+					setNumeroModelo(modelo.numImagen, "C");
+					// System.out.println("Caso 2: " +modelo.fisica.tamañoPagina
+					// + " = " + fisica.tamañoPagina);
+					System.out.println("Se encontró por esta palabra: "
+							+ modelo.metadatos.metaModelo);
+
+					return true;
+				}
+
+			}
+
+		}
+
+		return false;
+	}
+	
+	
+	
+	boolean detector(Modelo modelo){   // column = 1, servynombre; column = 2, nombre; column = 3, modelo
+		
+		System.out.println(modelo.numImagen + "  " + modelo.nombreNormalizado + "  " + modelo.servicioFijo + " " + modelo.metadatos.metaServicioNombre);
 		
 		if(!nhc.equals("Separador")){
 			// detectaEcos();
 			
 				if(!modelo.metadatos.metaServicioNombre.equals("@")){
 					//System.out.println(cadenaOCR);
+					
 					if(cadenaOCR.contains(modelo.metadatos.metaServicioNombre)){
 						nombreNormalizado = modelo.nombreNormalizado;
 						servicio = modelo.servicios.get(0);
 						// System.out.println("Caso 0: " +modelo.fisica.tamañoPagina + " = " + fisica.tamañoPagina);
 						System.out.println("Se encontró por esta palabra: " + modelo.metadatos.metaServicioNombre);
-						setNumeroModelo(numero,"A");
+						System.out.println("El número de imagen es... " + modelo.numImagen);
+						setNumeroModelo(modelo.numImagen,"A");
 						
 						return true;
 					}
@@ -197,13 +610,13 @@ public class Documento {
 								nombreNormalizado = modelo.nombreNormalizado;
 								//System.out.println("Caso 1: " +modelo.fisica.tamañoPagina + " = " + fisica.tamañoPagina);
 								System.out.println("Se encontró por esta palabra: " + modelo.metadatos.metaNombre);
-								setNumeroModelo(numero, "B");
+								setNumeroModelo(modelo.numImagen, "B");
 								marca = true;
 							}
 							else if(!modelo.metadatos.metaModelo.equals("@")){
 								if(cadenaOCR.contains(modelo.metadatos.metaModelo)){
 									nombreNormalizado = modelo.nombreNormalizado;
-									setNumeroModelo(numero, "C");
+									setNumeroModelo(modelo.numImagen, "C");
 									marca = true;
 									// System.out.println("Caso 2: " +modelo.fisica.tamañoPagina + " = " + fisica.tamañoPagina);
 									System.out.println("Se encontró por esta palabra: " + modelo.metadatos.metaModelo);
@@ -231,13 +644,13 @@ public class Documento {
 							nombreNormalizado = modelo.nombreNormalizado;
 							// System.out.println("Caso 1: " +modelo.fisica.tamañoPagina + " = " + fisica.tamañoPagina);
 							System.out.println("Se encontró por esta palabra: " + modelo.metadatos.metaNombre);
-							setNumeroModelo(numero, "B");
+							setNumeroModelo(modelo.numImagen, "B");
 							marca = true;
 						}
 						else if(!modelo.metadatos.metaModelo.equals("@")){
 							if(cadenaOCR.contains(modelo.metadatos.metaModelo)){
 								nombreNormalizado = modelo.nombreNormalizado;
-								setNumeroModelo(numero, "C");
+								setNumeroModelo(modelo.numImagen, "C");
 								marca = true;
 								//System.out.println("Caso 2: " +modelo.fisica.tamañoPagina + " = " + fisica.tamañoPagina);
 								System.out.println("Se encontró por esta palabra: " + modelo.metadatos.metaModelo);
@@ -371,6 +784,7 @@ public class Documento {
 					carpeta = carpetaRenombradaAuto;
 				}
 			}
+
 		}
 		
 		String raiz = Inicio.rutaDirectorio.substring(0,indexCarpeta);
@@ -421,6 +835,7 @@ public class Documento {
 		
 		
 		// Hace una copia de los documentos no reconocidos
+		/*
 		if(this.nombreNormalizado.toLowerCase().equals("x") && !nhc.equals("Separador")){
 			String rutaNoReconocidos = Inicio.RUTA_NO_RECONOCIDOS + "/Nombre/" + carpeta.substring(1);
 			File direct = new File(rutaNoReconocidos);
@@ -433,7 +848,7 @@ public class Documento {
 			
 			CopiarFichero.copiar(rutaOriginal, rutaNoReconocidos);
 		}
-		
+		*/
 		
 		System.out.println(nuevaRuta);
 		
@@ -543,7 +958,7 @@ public class Documento {
 	}
 	
 	void detectaEKGs(){
-		if(this.nombreNormalizado.equals("X") && !this.servicio.equals("Separador")){
+		if(this.nombreNormalizado.equals("X") && !this.nhc.equals("Separador")){
 			if(this.fisica.tamañoPagina == 0 && this.fisica.vertical == 2){
 				this.nombreNormalizado = Inicio.EKG;
 				}
@@ -552,7 +967,7 @@ public class Documento {
 
 	void detectaEcos(){
 		
-		if(this.nombreNormalizado.equals("X") && !this.servicio.equals("Separador")){
+		if(this.nombreNormalizado.equals("X") && !this.nhc.equals("Separador")){
 			if((this.fisica.dimensiones.alto <= 330 && this.fisica.dimensiones.alto >= 290) || 
 					this.fisica.dimensiones.ancho <= 330 && this.fisica.dimensiones.ancho >= 290){
 				if( this.servicio.equals(Inicio.CARC) || this.servicio.equals(Inicio.PEDC)){
@@ -567,7 +982,8 @@ public class Documento {
 	}
 	
 	void detectaMonitor(){
-		if(this.nombreNormalizado.equals("X") && !this.servicio.equals("Separador")){
+		
+		if(this.nombreNormalizado.equals("X") && !this.nhc.equals("Separador")){
 			if((this.fisica.dimensiones.alto <= 426 && this.fisica.dimensiones.alto >= 420) || 
 					this.fisica.dimensiones.ancho <= 426 && this.fisica.dimensiones.ancho >= 420){
 				this.nombreNormalizado = Inicio.MONITORIZACION;
@@ -576,7 +992,7 @@ public class Documento {
 	}
 	
 	void detectaDocRosa(){
-		if(this.nombreNormalizado.equals("X") && !this.servicio.equals("Separador")){
+		if(this.nombreNormalizado.equals("X") && !this.nhc.equals("Separador")){
 			if((this.fisica.dimensiones.alto <= 455  && this.fisica.dimensiones.alto >= 451) || 
 					this.fisica.dimensiones.ancho <= 455 && this.fisica.dimensiones.ancho >= 451){
 				if(this.cadenaOCR.contains("Tratamiento") || this.cadenaOCR.contains("Diagnóstico")){
@@ -624,3 +1040,15 @@ class Estadistica{
 	
 }
 
+class ParClaveNumero{
+	String clave = "";
+	String numero = "";
+	int indiceFin;
+	
+	public ParClaveNumero(String clave, String numero, int indiceFin) {
+		this.clave = clave;
+		this.numero = numero;
+		this.indiceFin = indiceFin;
+	}
+	
+}

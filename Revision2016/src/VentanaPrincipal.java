@@ -514,6 +514,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 				Inicio.jBServiciop.setText("Eliminar");
 				Inicio.jBNombreDoc.setText("Eliminar");
 				Inicio.jBNombreDocp.setText("Eliminar");
+				Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+				Inicio.utiles.encajarNombreNormalizado();
 				
 				Inicio.jBNHC.setBackground(Color.gray);
 				Inicio.jBNHCp.setBackground(Color.gray);
@@ -719,6 +721,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 		
 		Inicio.jBNombreDoc.setText(jListHabituales2.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setText(jListHabituales2.getSelectedValue().toString());
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+		Inicio.utiles.encajarNombreNormalizado();
 		Inicio.jBNombreDoc.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDoc.setIcon(null);
@@ -726,6 +730,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 		jListHabituales1.clearSelection();
 		Inicio.jLNombresDoc.clearSelection();
 		jListComunes.clearSelection();
+		
+		Inicio.listaDocumentos[Inicio.numeroPdf].modificado = true;
 		
 		new FocalAdobe(100);
 	}
@@ -737,6 +743,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 				.toString());
 		Inicio.jBNombreDocp.setText(jListHabituales1.getSelectedValue()
 				.toString());
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+		Inicio.utiles.encajarNombreNormalizado();
 		Inicio.jBNombreDoc
 				.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp
@@ -747,6 +755,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 		jListHabituales2.clearSelection();
 		jListComunes.clearSelection();
 		
+		Inicio.listaDocumentos[Inicio.numeroPdf].modificado = true;
+		
 		new FocalAdobe(100);
 	}
 
@@ -755,6 +765,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 		
 		Inicio.jBNombreDoc.setText(Inicio.jLNombresDoc.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setText(Inicio.jLNombresDoc.getSelectedValue().toString());
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+		Inicio.utiles.encajarNombreNormalizado();
 		Inicio.jBNombreDoc.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDoc.setIcon(null);
@@ -763,12 +775,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 		jListHabituales2.clearSelection();
 		jListComunes.clearSelection();
 		
+		Inicio.listaDocumentos[Inicio.numeroPdf].modificado = true;
+		
 		new FocalAdobe(100);
 	}
 
 	protected void listaNombresComunesMouseClicked(MouseEvent evt){
 		Inicio.jBNombreDoc.setText(jListComunes.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setText(jListComunes.getSelectedValue().toString());
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
+		Inicio.utiles.encajarNombreNormalizado();
 		Inicio.jBNombreDoc.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDoc.setIcon(null);
@@ -776,6 +792,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 		jListHabituales1.clearSelection();
 		jListHabituales2.clearSelection();
 		Inicio.jLNombresDoc.clearSelection();
+		
+		Inicio.listaDocumentos[Inicio.numeroPdf].modificado = true;
 		
 		new FocalAdobe(100);
 	}

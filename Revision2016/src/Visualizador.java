@@ -26,6 +26,7 @@ public class Visualizador {
 		
 		Inicio.jBNombreDoc.setText(Inicio.listaDocumentos[numArchivo].nombreNormalizado);
 		Inicio.jBNombreDocp.setText(Inicio.listaDocumentos[numArchivo].nombreNormalizado);
+		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
 		if(Inicio.listaDocumentos[numArchivo].nombreNormalizado == "X"){
 			Inicio.jBNombreDocp.setBackground(Color.red);
 			Inicio.jBNombreDoc.setBackground(Color.red);

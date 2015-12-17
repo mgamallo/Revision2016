@@ -1,3 +1,5 @@
+import javax.swing.JOptionPane;
+
 
 public class NHC {
 	static public String nhcTriaje(Documento doc){
@@ -125,4 +127,50 @@ public class NHC {
 		return doc.cadenaOCR.substring(0,limiteCadena);
 	}
 	
+	static boolean borrarNHC(Documento doc){
+		
+		if(doc.nhc.equals("23515")){
+			doc.semaforoAmarilloNhc = true;
+			if(doc.cadenaOCR.contains("023515") || doc.nombreNormalizado.equals(Inicio.ENFERMERIA_QUIRURGICA)){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else if(doc.nhc.equals("23664")){
+			doc.semaforoAmarilloNhc = true;
+			if(doc.cadenaOCR.contains("023664") || doc.nombreNormalizado.equals(Inicio.ORDENES_MEDICAS)){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else if(doc.nhc.equals("23669")){
+			doc.semaforoAmarilloNhc = true;
+			if(doc.cadenaOCR.contains("023669") || doc.nombreNormalizado.equals(Inicio.REGISTRO_ANESTESIA)){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else if(doc.nhc.equals("23630")){
+			doc.semaforoAmarilloNhc = true;
+			if(doc.cadenaOCR.contains("023630") || doc.nombreNormalizado.equals(Inicio.INFORME_ALTA)){
+				return true;
+			}
+			else{
+				return false;
+			}
+		}
+		else if(doc.nhc.equals("36001") &&  doc.nombreNormalizado.equals(Inicio.DENSITOMETRIA)) {
+			return true;
+		}
+		else{
+			return false;
+		}
+
+	}
 }

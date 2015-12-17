@@ -7,6 +7,8 @@ public class Modelo {
 	String nombreNormalizado ="";
 	ArrayList<String> servicios = new ArrayList<String>();           // 0 los propios del nombre Normalizado
 	
+	int numImagen = 0;
+	
 	Fisica fisica = new Fisica();
 	
 	Metadatos metadatos = new Metadatos();

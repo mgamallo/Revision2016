@@ -140,13 +140,15 @@ public class Mapa {
 		}
 		
 		System.out.println(sub);
+		
+		
 		if (sub.contains(separadorApartir)){
 				return "SI";
 		}
 		else if (cadenaBruta.contains("A PARTIR DE")){
 			return "SI";
 		}
-				
+		
 		return "NO";
 	}
 	
