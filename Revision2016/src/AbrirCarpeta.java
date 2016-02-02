@@ -20,9 +20,12 @@ public class AbrirCarpeta {
 
 		System.out.println("Constructor abrir carpeta.");
 		
-		if(Inicio.documentacionDeUrgencias){
+		if(Inicio.destinoDocumentacion == 0){
 			ruta = Inicio.RUTAURG;
 	//		rutab = Inicio.RUTAURGB;
+		}
+		else if(Inicio.destinoDocumentacion == 2){
+			ruta = Inicio.RUTASAL;
 		}
 		
 		eligeDirectorio = listaPdfs();
@@ -40,7 +43,7 @@ public class AbrirCarpeta {
 		explorador = new JFileChooser();
 		explorador.setDialogTitle("Abrir carpeta...");
 
-		if(Inicio.documentacionDeUrgencias){
+		if(Inicio.destinoDocumentacion == 0){
 				String cadenaUsuario = "\\01 " + Inicio.usuario + "\\01 Escaneado";
 				ruta += cadenaUsuario;
 				System.out.println(cadenaUsuario);
@@ -67,7 +70,7 @@ public class AbrirCarpeta {
 			File nombreViejo = new File(explorador.getSelectedFile().toString());
 						
 		//	System.out.println(explorador.getSelectedFile().toString());
-			File nombreNuevo = new File(explorador.getSelectedFile().toString() + " " + Inicio.usuario );
+			File nombreNuevo = new File(explorador.getSelectedFile().toString() + " ç " + Inicio.usuario );
 		//	System.out.println(explorador.getSelectedFile().toString() + " " + InicioIanus.usuario);
 			
 			boolean renombrado = nombreViejo.renameTo(nombreNuevo);

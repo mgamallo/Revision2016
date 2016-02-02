@@ -131,7 +131,7 @@ public class VentanaA3 extends javax.swing.JFrame {
         //  Inicio.jBNombreDocp.setEnabled(false);
         Inicio.jBNombreDocp.setText(Inicio.URPA);
         Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-        Inicio.utiles.encajarNombreNormalizado();
+        Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
         Inicio.jBNombreDocp.setBackground(Color.pink);
         Inicio.jBNombreDocp.setFont(new java.awt.Font("Serif", 1, 20)); // NOI18N
 
@@ -174,7 +174,7 @@ public class VentanaA3 extends javax.swing.JFrame {
         		Inicio.jBNombreDocp.setText(jList1.getSelectedValue().toString());
         		
         		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-        		Inicio.utiles.encajarNombreNormalizado();
+        		Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
         	}
 		});
         
@@ -253,7 +253,7 @@ public class VentanaA3 extends javax.swing.JFrame {
 				Inicio.jBNombreDoc.setText("Eliminar");
 				Inicio.jBNombreDocp.setText("Eliminar");
 				Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-				Inicio.utiles.encajarNombreNormalizado();
+				Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 
 				Inicio.jBNHC.setBackground(Color.gray);
 				Inicio.jBNHCp.setBackground(Color.gray);
@@ -449,7 +449,7 @@ public class VentanaA3 extends javax.swing.JFrame {
 		Inicio.jBNombreDoc.setText("Apartar");
 		Inicio.jBNombreDocp.setText("Apartar");
 		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-		Inicio.utiles.encajarNombreNormalizado();
+		Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 
 		Inicio.jBNHC.setBackground(Color.gray);
 		Inicio.jBNHCp.setBackground(Color.gray);
@@ -568,6 +568,8 @@ public class VentanaA3 extends javax.swing.JFrame {
 					Inicio.jBServicio.setBackground(Color.yellow);
 					Inicio.jBServiciop.setBackground(Color.yellow);
 				}
+				
+				Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 
 				//   Actualiza al servicio del documento
  			   
@@ -859,7 +861,7 @@ public class VentanaA3 extends javax.swing.JFrame {
 					// <= 2){
 					Inicio.jBNombreDocp.setText(Inicio.EKG);
 					Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-					Inicio.utiles.encajarNombreNormalizado();
+					Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 					Inicio.jBNombreDoc.setText(Inicio.EKG);
 					Inicio.jBServiciop.setText(Inicio.CARC);
 					Inicio.jBServicio.setText(Inicio.CARC);

@@ -67,7 +67,7 @@ public class VentanaExtraer extends JFrame{
             comboServicios.addItem(Inicio.excel.listaServicios[i]);
         }
         comboServicios.addItem("Des");
-        if(Inicio.documentacionDeUrgencias){
+        if(Inicio.destinoDocumentacion == 0){
         	comboServicios.setSelectedItem(Inicio.URG);
         }
         else{

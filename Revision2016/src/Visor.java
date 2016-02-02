@@ -33,10 +33,11 @@ public class Visor extends JDialog{
 	ImageIcon imagen;
 	
 	JLabel obsvLabel = new JLabel("Observaciones:");
-	JLabel contObsvLabel = new JLabel("Aquí van las observaciones");
+	JLabel contObsvLabel = new JLabel("");
 	
 	ArrayList<String> rutasJpgs = new ArrayList<String>();
 	ArrayList<String> nombresDocumentos = new ArrayList<String>();
+	ArrayList<String> servicios = new ArrayList<String>();
 	ArrayList<String> observaciones = new ArrayList<String>();
 	
 	URL urlDeLaImagen;
@@ -134,7 +135,7 @@ public class Visor extends JDialog{
 		    		imagen.getImage().flush();
 		    		fotoLabel.setIcon(imagen);
 		    		nombreDocLabel.setText(nombresDocumentos.get(fotoVisible));
-		    		contObsvLabel.setText(observaciones.get(fotoVisible));
+		    		contObsvLabel.setText(servicios.get(fotoVisible) + ". " + observaciones.get(fotoVisible));
 	    		}
 	    	}
 	    });
@@ -150,7 +151,8 @@ public class Visor extends JDialog{
 	    			imagen.getImage().flush();
 		    		fotoLabel.setIcon(imagen);
 		    		nombreDocLabel.setText(nombresDocumentos.get(fotoVisible));
-		    		contObsvLabel.setText(observaciones.get(fotoVisible));
+		    		contObsvLabel.setText(servicios.get(fotoVisible) + ". " + observaciones.get(fotoVisible));
+
 	    		}
 	    	}
 	    });
@@ -199,6 +201,8 @@ public class Visor extends JDialog{
 		    		fotoLabel.setIcon(imagen);
 		    		nombreDocLabel.setText(nombresDocumentos.get(fotoVisible));
 		    		contObsvLabel.setText(observaciones.get(fotoVisible));
+		    		contObsvLabel.setText(servicios.get(fotoVisible) + ". " + observaciones.get(fotoVisible));
+
 	    		}
 	    	}
 	    });
@@ -215,6 +219,8 @@ public class Visor extends JDialog{
 		    		fotoLabel.setIcon(imagen);
 		    		nombreDocLabel.setText(nombresDocumentos.get(fotoVisible));
 		    		contObsvLabel.setText(observaciones.get(fotoVisible));
+		    		contObsvLabel.setText(servicios.get(fotoVisible) + ". " + observaciones.get(fotoVisible));
+
 	    		}
 	    	}
 	    });
@@ -240,7 +246,7 @@ public class Visor extends JDialog{
 		obsvLabel.setForeground(Color.black);
 		obsvLabel.setFont(new Font("TimesRoman",Font.BOLD,20));
 		
-		contObsvLabel.setText(observaciones.get(fotoVisible));
+		contObsvLabel.setText(servicios.get(fotoVisible) + ". " + observaciones.get(fotoVisible));
 		contObsvLabel.setForeground(Color.red);
 		contObsvLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		contObsvLabel.setFont(new Font("TimesRoman",Font.PLAIN,25));
@@ -261,17 +267,18 @@ public class Visor extends JDialog{
 */
 	public void setImagen
 		(final ArrayList<String> nombresDocumentos, final ArrayList<String> rutasJpgs
-				,final int fotoVisionar, final ArrayList<String> observaciones, ImageIcon imagenSel){
+				,final int fotoVisionar,final ArrayList<String> servicios, final ArrayList<String> observaciones, ImageIcon imagenSel){
 		
 		this.nombresDocumentos = nombresDocumentos;
 		this.rutasJpgs = rutasJpgs;
+		this.servicios = servicios;
 		this.observaciones = observaciones;
 		
 		fotoVisible = fotoVisionar;
 		imagen = imagenSel;
 		fotoLabel.setIcon(imagen);
-		
-		this.contObsvLabel.setText(this.observaciones.get(fotoVisionar));
+
+		this.contObsvLabel.setText(this.servicios.get(fotoVisible) + ". " + this.observaciones.get(fotoVisionar));
 		this.nombreDocLabel.setText(this.nombresDocumentos.get(fotoVisionar));
 	}
 	

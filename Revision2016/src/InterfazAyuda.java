@@ -37,7 +37,7 @@ import javax.swing.table.DefaultTableModel;
 
 
 
-public class InterfazVisorMeta extends JDialog{
+public class InterfazAyuda extends JDialog{
 
 	/**
 	 * @param args
@@ -65,12 +65,13 @@ public class InterfazVisorMeta extends JDialog{
 	ArrayList<String> nombres = new ArrayList<String>();
 	ArrayList<String> rutaJpgs = new ArrayList<String>();
 	ArrayList<String> observaciones = new ArrayList<String>();
+	ArrayList<String> servicios = new ArrayList<String>();
 
 	Object[] filaObjetos = new Object[]{"1","2","3"};
 
 	Object[][] imagenes;
 	
-	InterfazVisorMeta(){
+	InterfazAyuda(){
 		setTitle("Visor de metaDatos");
 		setModal(false);
 		
@@ -360,8 +361,10 @@ public class InterfazVisorMeta extends JDialog{
 	    			modelo.removeRow(0);
 	    		}
 	    		
+	    		Inicio.utiles.habilitarTeclas(Inicio.jBDeshabilitar.getText(),Inicio.visualizacion);
 	    		Inicio.visorAyuda.setVisible(false);
 	    		setVisible(false);
+
 	    	}
 	    });
 	    
@@ -414,6 +417,7 @@ public class InterfazVisorMeta extends JDialog{
 		panelInferior.setLayout(new BorderLayout());
 		
 		JBmodificar.setEnabled(false);
+		JBmodificar.setVisible(false);
 		JBmodificar.setBackground(Color.green);
 		panelInferior.add(obsvLabel,BorderLayout.WEST);
 		panelInferior.add(contObsvLabel,BorderLayout.SOUTH);
@@ -474,11 +478,12 @@ public class InterfazVisorMeta extends JDialog{
 				// else{
 				
 				//	texto.setText("     " + nombres.get(fil*3 + column));
-					Inicio.visorAyuda.setImagen(nombres, rutaJpgs, fil*3+column, observaciones, rescaleImage(new File(rutaJpgs.get(fil*3+column)), 600, 800));
+					Inicio.visorAyuda.setImagen(nombres, rutaJpgs, fil*3+column, servicios, observaciones, rescaleImage(new File(rutaJpgs.get(fil*3+column)), 600, 800));
 					Inicio.visorAyuda.setVisible(true);
 					
 					//= new Visor(nombres,rutaJpgs,fil*3+column,observaciones, rescaleImage(new File(rutaJpgs.get(fil*3+column)), 600, 800));
-					contObsvLabel.setText(observaciones.get(fil*3 + column));
+					contObsvLabel.setText(servicios.get(fil*3 + column) + ". " + 
+											observaciones.get(fil*3 + column));
 				//}
 				
 				Inicio.auxRutaImagen = rutaJpgs.get(fil*3 + column);
@@ -588,11 +593,12 @@ public class InterfazVisorMeta extends JDialog{
 		Iterator<String> it = Inicio.indiceGeneralAyuda.keySet().iterator();
 		while(it.hasNext()){
 		  String key = (String) it.next();
+		  /*
 		  System.out.println("Clave: " + key + " ->"); 
 		  for(int i=0;i<Inicio.indiceGeneralAyuda.get(key).indices.size();i++){
 			  System.out.println("   Valor: " + Inicio.indiceGeneralAyuda.get(key).indices.get(i));
 		  }
-		  
+		  */
 		  metaDatosDCBM.addElement(key);
 		}
 	
@@ -637,6 +643,9 @@ public class InterfazVisorMeta extends JDialog{
 		
 	        	//	Obtiene la ruta de las imagenes
 	        	rutaJpgs = this.getRutaJpg(registrosEncontrados);
+	        	
+	        	//  Obtiene los servicios de cada documento
+	        	servicios = this.getServicios(registrosEncontrados);
 	        	
 	        	//	Obtiene las observaciones de cada documento
 	        	observaciones = this.getObservaciones(registrosEncontrados);      
@@ -737,6 +746,20 @@ public class InterfazVisorMeta extends JDialog{
 
 	}
 	
+	//	Método para cargar la lista de los servicios de cada documento
+	private ArrayList<String> getServicios(ArrayList<RegistroAyuda> registros) {
+		
+		ArrayList<String> listaServicios = new ArrayList<String>();
+		int numFilas = registros.size();
+		for(int i=0;i<numFilas;i++){
+			listaServicios.add(registros.get(i).getServicios());
+		}
+		
+		return listaServicios;
+
+	}	
+	
+	
 	//	Método para cargar la lista de observaciones de los documentos
 	private ArrayList<String> getObservaciones(ArrayList<RegistroAyuda> registros) {
 		ArrayList<String> listaObs = new ArrayList<String>();
@@ -749,6 +772,6 @@ public class InterfazVisorMeta extends JDialog{
 	}
 	
 	public static void main(String args[]){
-		new InterfazVisorMeta();
+		new InterfazAyuda();
 	}
 }

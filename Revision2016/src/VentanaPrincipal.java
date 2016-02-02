@@ -334,7 +334,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addComponent(jBFijarServicio)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jBFijarNombres)
-                .addGap(57, 57, 57)
+                .addGap(17, 17, 17)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton9,60,60,60)
+                .addGap(24,24,24)
                 .addComponent(Inicio.jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24))
         );
@@ -348,6 +351,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addComponent(jButton5)
                 .addComponent(jBFijarServicio)
                 .addComponent(jBFijarNombres)
+                .addComponent(jButton9)
                 .addComponent(Inicio.jCheckBox1))
         );
 
@@ -390,7 +394,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         Inicio.jLNombresDoc.setBackground(new java.awt.Color(255, 255, 204));
         Inicio.jLNombresDoc.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-		if(Inicio.documentacionDeUrgencias){
+		if(Inicio.destinoDocumentacion == 0){
 	        Inicio.jLNombresDoc.setModel(Inicio.excel.getDocServicio("URG"));
 		}
 		else{
@@ -410,7 +414,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         
         jListHabituales1.setBackground(new java.awt.Color(255, 241, 182));
         jListHabituales1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        if(Inicio.documentacionDeUrgencias){
+        if(Inicio.destinoDocumentacion == 0){
         	jListHabituales1.setModel(Inicio.excel.listaHabitualesUrg);
         }else{
         	jListHabituales1.setModel(Inicio.excel.listaHabituales1);
@@ -515,7 +519,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 				Inicio.jBNombreDoc.setText("Eliminar");
 				Inicio.jBNombreDocp.setText("Eliminar");
 				Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-				Inicio.utiles.encajarNombreNormalizado();
+				Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 				
 				Inicio.jBNHC.setBackground(Color.gray);
 				Inicio.jBNHCp.setBackground(Color.gray);
@@ -539,6 +543,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
       //  jBCarpeta.setIcon(new ImageIcon("iconos/carpeta 32.png"));
         jBCarpeta.setText("Carpeta");
+        jBCarpeta.setBackground(Color.black);
+        jBCarpeta.setForeground(Color.white);
         jBCarpeta.setToolTipText("Abre la carpeta actual");
         
         jBCarpeta.addActionListener(new java.awt.event.ActionListener() {
@@ -590,11 +596,47 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 			}
 		});
         
-        jButton9.setText("Vacio");
-        jButton9.setVisible(false);
+        jButton9.setText("A");
+        jButton9.setBackground(Color.orange);
+        jButton9.setFont(new java.awt.Font("Tahoma", 1, 10)); // NOI18N
+        jButton9.setVisible(true);
+        jButton9.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				// Inicializa los parametros de visualización del adobe de los pcs nuevos
+				
+				File archivo3 = null;
+				archivo3 = new File(Inicio.rutaPreferenciasAdobe);
 
-        jButton10.setText("Vacio");
-        jButton10.setVisible(false);
+		        try {
+
+					 Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + archivo3);
+		        	    		        	        	
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			
+				
+			}
+		});
+
+        jButton10.setText("Ayuda");
+        jButton10.setBackground(Color.yellow);
+        jButton10.setVisible(true);
+        jButton10.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+        	 Inicio.utiles.habilitarTeclas(Inicio.jBDeshabilitar.getText(),Inicio.visualizacion);
+       		 Inicio.ventanaAyuda.setVisible(true);
+			}
+		});
 
       //  jBFirmar.setIcon(new ImageIcon("iconos/drawing_pen 32.png"));
         jBFirmar.setText("Firmar");
@@ -609,7 +651,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 					
 					String usuarioUrgencias = "documentacion";
 					
-					if(Inicio.documentacionDeUrgencias){
+					if(Inicio.destinoDocumentacion == 0){
 						usuarioUrgencias = "urgencias";
 					}
 					
@@ -638,21 +680,19 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(Inicio.jBDeshabilitar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBEliminar,90,90,90)
+                .addComponent(jBEliminar,80,80,80)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jBApartar,90,90,90)
-                .addGap(30, 30, 30)
+                .addComponent(jBApartar,80,80,80)
+                .addGap(15, 15, 15)
                 .addComponent(jBFechas,40,40,40)
-                .addGap(30, 30, 30)
-                .addComponent(jBCarpeta,90,90,90)
+                .addGap(15, 15, 15)
+                .addComponent(jBCarpeta,80,80,80)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton10,70,70,70)
                 .addPreferredGap(ComponentPlacement.RELATED)
-                .addComponent(jBExtraer,90,90,90)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton9,90,90,90)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton10,90,90,90)
+                .addComponent(jBExtraer,80,80,80)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jBFirmar,90,90,90))
+                .addComponent(jBFirmar,80,80,80))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -665,9 +705,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                     .addComponent(jBApartar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBCarpeta, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jBFechas,29,29,29)
+                    .addComponent(jButton10,29,29,29)
                     .addComponent(jBExtraer, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton9)
-                    .addComponent(jButton10)
                     .addComponent(jBFirmar)
                     //.addComponent(jBFirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     )
@@ -719,10 +758,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 	protected void listaHabituales2DocMouseClicked(MouseEvent evt) {
 		// TODO Auto-generated method stub
 		
+
+		
 		Inicio.jBNombreDoc.setText(jListHabituales2.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setText(jListHabituales2.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-		Inicio.utiles.encajarNombreNormalizado();
+		Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 		Inicio.jBNombreDoc.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDoc.setIcon(null);
@@ -744,7 +785,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 		Inicio.jBNombreDocp.setText(jListHabituales1.getSelectedValue()
 				.toString());
 		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-		Inicio.utiles.encajarNombreNormalizado();
+		Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 		Inicio.jBNombreDoc
 				.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp
@@ -766,7 +807,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 		Inicio.jBNombreDoc.setText(Inicio.jLNombresDoc.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setText(Inicio.jLNombresDoc.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-		Inicio.utiles.encajarNombreNormalizado();
+		Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 		Inicio.jBNombreDoc.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDoc.setIcon(null);
@@ -784,7 +825,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 		Inicio.jBNombreDoc.setText(jListComunes.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setText(jListComunes.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-		Inicio.utiles.encajarNombreNormalizado();
+		Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 		Inicio.jBNombreDoc.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDoc.setIcon(null);

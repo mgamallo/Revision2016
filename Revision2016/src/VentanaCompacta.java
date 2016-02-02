@@ -418,7 +418,7 @@ public class VentanaCompacta extends javax.swing.JFrame {
 				Inicio.jBNombreDoc.setText("Eliminar");
 				Inicio.jBNombreDocp.setText("Eliminar");
 				Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-				Inicio.utiles.encajarNombreNormalizado();
+				Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 
 				Inicio.jBNHC.setBackground(Color.gray);
 				Inicio.jBNHCp.setBackground(Color.gray);
@@ -561,7 +561,7 @@ public class VentanaCompacta extends javax.swing.JFrame {
 		Inicio.jBNombreDoc.setText("Apartar");
 		Inicio.jBNombreDocp.setText("Apartar");
 		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-		Inicio.utiles.encajarNombreNormalizado();
+		Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 
 		Inicio.jBNHC.setBackground(Color.gray);
 		Inicio.jBNHCp.setBackground(Color.gray);
@@ -615,7 +615,7 @@ public class VentanaCompacta extends javax.swing.JFrame {
 		Inicio.jBNombreDoc.setText("");
 		Inicio.jBNombreDocp.setText("");
 		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-		Inicio.utiles.encajarNombreNormalizado();
+		Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 	}
 
 	// Variables declaration - do not modify
@@ -705,15 +705,15 @@ public class VentanaCompacta extends javax.swing.JFrame {
 				
 				new Acrobat().rotarPagina();
 				if ((Inicio.jBServicio.getText().equals(Inicio.CARC) || Inicio.jBServicio
-						.getText().equals(Inicio.ANRC) || Inicio.documentacionDeUrgencias)
+						.getText().equals(Inicio.ANRC) || Inicio.destinoDocumentacion == 0)
 						&& Inicio.jBNombreDoc.getText().equals("X")) {
 					// if(Inicio.listaDocumentos[Inicio.numeroPdf].fisica.numPaginas
 					// <= 2){
 					Inicio.jBNombreDocp.setText(Inicio.EKG);
 					Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-					Inicio.utiles.encajarNombreNormalizado();
+					Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 					Inicio.jBNombreDoc.setText(Inicio.EKG);
-					if(Inicio.documentacionDeUrgencias){
+					if(Inicio.destinoDocumentacion == 0){
 						Inicio.jBServiciop.setText(Inicio.URG);
 						Inicio.jBServicio.setText(Inicio.URG);
 					}else{

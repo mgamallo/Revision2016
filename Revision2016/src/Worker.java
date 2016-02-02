@@ -1,4 +1,6 @@
 import java.awt.AWTException;
+import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Frame;
 import java.io.File;
@@ -55,19 +57,19 @@ class Worker extends SwingWorker<Double, Integer>{
 //		rutaCompletaPdfs = new String[tamaño];
 //		objetoPuente = new Object[tamañoLista];	//	Para pasar los datos a un jOptionPane (ya subidos)
 	
-		int aux = pdfs.ficheros.length;
-		Inicio.listaDocumentos = new Documento[aux];
+		int numeroDocs = pdfs.ficheros.length;
+		Inicio.listaDocumentos = new Documento[numeroDocs];
 		int tamModelos = Inicio.modelos.size();
 		System.out.println("Estamos en doInBackground, en el hilo " + 
 				Thread.currentThread().getName());
 		
-		for(int i=0;i<aux;i++){
+		for(int i=0;i<numeroDocs;i++){
 			Inicio.listaDocumentos[i] = new Documento(pdfs.ficheros[i].getAbsolutePath());
 			Inicio.listaDocumentos[i].getNhc();
-			publish( i*100/aux,0,0,0,i);
+			publish( i*100/numeroDocs,0,0,0,i);
 		}
 		
-		for(int i=0;i<aux;i++){
+		for(int i=0;i<numeroDocs;i++){
 			
 			System.out.println(Inicio.listaDocumentos[i].cadenaOCR);
 
@@ -98,7 +100,7 @@ class Worker extends SwingWorker<Double, Integer>{
 			// publish( Porcentaje NHC, PorcentajeDocumentos, PorcentajeServicios, PorcentajeRenombrar, nº de pdf)
 			// System.out.println("*************************************************************");
 			System.out.println("Pdf número nhc..." + i );
-			publish( 0,i*100/aux,0,0,i);
+			publish( 0,i*100/numeroDocs,0,0,i);
 		}
 		
 		System.out.println("Segunda tanda de reconocimiento...");
@@ -108,7 +110,7 @@ class Worker extends SwingWorker<Double, Integer>{
 		
 		
 		try {
-			for(int i=0;i<aux;i++){
+			for(int i=0;i<numeroDocs;i++){
 				
 				Inicio.listaDocumentos[i].escanerNHC(Inicio.listaDocumentos[i].numeroModelo);
 				Inicio.listaDocumentos[i].nhc = esNumerico(Inicio.listaDocumentos[i].nhc);
@@ -149,25 +151,39 @@ class Worker extends SwingWorker<Double, Integer>{
 
 		
 		// Tercera tanda de reconocimiento solo para urgencias
-		for(int i=0;i<aux;i++){
+		for(int i=0;i<numeroDocs;i++){
 				Inicio.listaDocumentos[i].reDetectorNHCUrgencias();
 		}
 		
 		
 		// Reconocimientos varios
-		for(int i=0;i<aux;i++){
+		for(int i=0;i<numeroDocs;i++){
 			 
 			// Inicio.listaDocumentos[i].nhc = NHC.nhcTriaje143(Inicio.listaDocumentos[i]);
 			 
 			if(NHC.borrarNHC(Inicio.listaDocumentos[i])){
 				 Inicio.listaDocumentos[i].nhc = "NO";
 			}
+			
+			if(Inicio.listaDocumentos[i].nombreNormalizado.equals("X")){
+				if(Excepciones.detectaOrdenesMedicas(i)){
+					Inicio.listaDocumentos[i].nombreNormalizado = Inicio.ORDENES_MEDICAS;
+				}
+				
+				if(Excepciones.detectaProtocolo(i)){
+					Inicio.listaDocumentos[i].nombreNormalizado = Inicio.REGISTRO_ANESTESIA;
+				}
+			}
+			
+			if(Inicio.listaDocumentos[i].nombreNormalizado.equals("X")){
+
+			}
 		}
 		
 		
 		//	Reconocimiento de ekg´s y ecos
 		
-		for(int i=0;i<aux;i++){
+		for(int i=0;i<numeroDocs;i++){
 			
 			// JOptionPane.showMessageDialog(null, Inicio.listaDocumentos[i].nhc);
 			
@@ -180,7 +196,7 @@ class Worker extends SwingWorker<Double, Integer>{
 			
 			System.out.println("Publico... " + i);
 			
-			publish(100,i*100/aux,0,0,i);
+			publish(100,i*100/numeroDocs,0,0,i);
 		}
 		
 		
@@ -465,11 +481,39 @@ class Worker extends SwingWorker<Double, Integer>{
 	    		}
 	    	}
 	    	
-	    	if(Inicio.documentacionDeUrgencias){
+	    	if(Inicio.destinoDocumentacion == 0){
 	    		Inicio.ventanaExplorador.renombraURG();
 	    	}
 	    }
 		vProgreso.dispose();
+		
+		abrePrimerPdf();
+		
+		/*
+		// Inicializa los parametros de visualización del adobe de los pcs nuevos
+		
+		File archivo3 = null;
+		archivo3 = new File(Inicio.rutaPreferenciasAdobe);
+
+        
+        System.out.println("El archivo existe?" + archivo3.exists());
+        
+ //       File archivo3 = new File(Inicio.rutaFocoNHC);
+        try {
+        	
+        	 Thread.sleep(2500);
+			 Process p = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + archivo3);
+//			 Process pNHC = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + archivo3);
+        	    		        	        	
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+		
 	}
 	
 	@Override
@@ -516,5 +560,214 @@ class Worker extends SwingWorker<Double, Integer>{
 		
 		return Inicio.SEPARADOR;
 
+	}
+	
+	void abrePrimerPdf(){
+		if (Inicio.numeroPdf < Inicio.tamañoCarpetaPdf - 1) {
+
+
+			File archivo = new File(
+					Inicio.listaDocumentos[Inicio.numeroPdf].rutaArchivo);
+
+			Inicio.utiles.detectaNHCsecuencial();
+
+			if (Inicio.menuVertical) {
+				Inicio.ventanaIntegral.listaPdfs
+						.setSelectedIndex(Inicio.numeroPdf);
+			} else {
+				Inicio.ventanaExplorador.listaPdfs
+						.setSelectedIndex(Inicio.numeroPdf);
+			}
+
+			try {
+				// Process p = Runtime.getRuntime().exec(
+				// "rundll32 url.dll,FileProtocolHandler " + archivo);
+
+				Desktop.getDesktop().open(archivo);
+
+				Inicio.jBNHC
+						.setText(Inicio.listaDocumentos[Inicio.numeroPdf].nhc);
+				if (Inicio.listaDocumentos[Inicio.numeroPdf].nhc
+						.equals("Separador")
+						|| Inicio.listaDocumentos[Inicio.numeroPdf].nhc
+								.contains("ERROR")
+						|| Inicio.listaDocumentos[Inicio.numeroPdf].nhc
+								.equals("NO")) {
+					Inicio.jBNHC.setBackground(Color.red);
+					Inicio.jBNHCp.setBackground(Color.red);
+					/*
+					 * if(Inicio.menuVertical){
+					 * Inicio.ventanaMicro.jBNHCm.setBackground(Color.red); }
+					 */
+				} else if (Inicio.listaDocumentos[Inicio.numeroPdf].nhc
+						.equals("Eliminar")
+						|| Inicio.listaDocumentos[Inicio.numeroPdf].nhc
+								.equals("Apartar")) {
+					Inicio.jBNHC.setBackground(Color.GRAY);
+					Inicio.jBNHCp.setBackground(Color.GRAY);
+					/*
+					 * if(Inicio.menuVertical){
+					 * Inicio.ventanaMicro.jBNHCm.setBackground(Color.GRAY); }
+					 */
+				} else if (Inicio.listaDocumentos[Inicio.numeroPdf].semaforoAmarilloNhc) {
+					Inicio.jBNHC.setBackground(Color.yellow);
+					Inicio.jBNHCp.setBackground(Color.yellow);
+					/*
+					 * if(Inicio.menuVertical){
+					 * Inicio.ventanaMicro.jBNHCm.setBackground(Color.yellow); }
+					 */
+				} else {
+					Inicio.jBNHC.setBackground(Color.green);
+					Inicio.jBNHCp.setBackground(Color.green);
+					/*
+					 * if(Inicio.menuVertical){
+					 * Inicio.ventanaMicro.jBNHCm.setBackground(Color.green); }
+					 */
+				}
+
+				if (Inicio.listaDocumentos[Inicio.numeroPdf].nhc
+						.equals("Separador")
+						&& !Inicio.listaDocumentos[Inicio.numeroPdf].servicio
+								.equals("X")) {
+					Inicio.jBNHC.setBackground(Color.green);
+					Inicio.jBNHCp.setBackground(Color.green);
+					/*
+					 * if(Inicio.menuVertical){
+					 * Inicio.ventanaMicro.jBNHCm.setBackground(Color.green); }
+					 */
+				}
+
+				Inicio.jBServicio
+						.setText(Inicio.listaDocumentos[Inicio.numeroPdf].servicio);
+				if (Inicio.listaDocumentos[Inicio.numeroPdf].servicio
+						.equals("X")) {
+					Inicio.jBServicio.setBackground(Color.red);
+					Inicio.jBServiciop.setBackground(Color.red);
+					/*
+					 * if(Inicio.menuVertical){
+					 * Inicio.ventanaMicro.jBServiciom.setBackground(Color.red);
+					 * }
+					 */
+				} else if (Inicio.listaDocumentos[Inicio.numeroPdf].servicio
+						.equals("Eliminar")
+						|| Inicio.listaDocumentos[Inicio.numeroPdf].servicio
+								.equals("Apartar")) {
+					Inicio.jBServicio.setBackground(Color.GRAY);
+					Inicio.jBServiciop.setBackground(Color.GRAY);
+					/*
+					 * if(Inicio.menuVertical){
+					 * Inicio.ventanaMicro.jBServiciom.setBackground
+					 * (Color.gray); }
+					 */
+				} else {
+					Inicio.jBServicio.setBackground(Color.green);
+					Inicio.jBServiciop.setBackground(Color.green);
+					/*
+					 * if(Inicio.menuVertical){
+					 * Inicio.ventanaMicro.jBServiciom.setBackground
+					 * (Color.green); }
+					 */
+				}
+
+				Inicio.jBNombreDoc
+						.setText(Inicio.listaDocumentos[Inicio.numeroPdf].nombreNormalizado);
+				if (Inicio.listaDocumentos[Inicio.numeroPdf].nombreNormalizado
+						.equals("X")) {
+					Inicio.jBNombreDoc.setBackground(Color.red);
+					Inicio.jBNombreDocp.setBackground(Color.red);
+					/*
+					 * if(Inicio.menuVertical){
+					 * Inicio.ventanaMicro.jBNombreDocm.
+					 * setBackground(Color.red); }
+					 */
+				} else if (Inicio.listaDocumentos[Inicio.numeroPdf].nombreNormalizado
+						.equals("Eliminar")
+						|| Inicio.listaDocumentos[Inicio.numeroPdf].nombreNormalizado
+								.equals("Apartar")) {
+					Inicio.jBNombreDoc.setBackground(Color.GRAY);
+					Inicio.jBNombreDocp.setBackground(Color.GRAY);
+					/*
+					 * if(Inicio.menuVertical){
+					 * Inicio.ventanaMicro.jBNombreDocm.
+					 * setBackground(Color.gray); }
+					 */
+				} else {
+					Inicio.jBNombreDoc.setBackground(Color.green);
+					Inicio.jBNombreDocp.setBackground(Color.green);
+					/*
+					 * if(Inicio.menuVertical){
+					 * Inicio.ventanaMicro.jBNombreDocm.
+					 * setBackground(Color.green); }
+					 */
+				}
+
+				Inicio.jBNHCp
+						.setText(Inicio.listaDocumentos[Inicio.numeroPdf].nhc);
+				Inicio.jBServiciop
+						.setText(Inicio.listaDocumentos[Inicio.numeroPdf].servicio);
+				Inicio.jBNombreDocp
+						.setText(Inicio.listaDocumentos[Inicio.numeroPdf].nombreNormalizado);
+				/*
+				 * if(Inicio.menuVertical){
+				 * Inicio.ventanaMicro.jBNHCm.setText(Inicio
+				 * .listaDocumentos[Inicio.numeroPdf].nhc);
+				 * Inicio.ventanaMicro.jBServiciom
+				 * .setText(Inicio.listaDocumentos[Inicio.numeroPdf].servicio);
+				 * Inicio
+				 * .ventanaMicro.jBNombreDocm.setText(Inicio.listaDocumentos
+				 * [Inicio.numeroPdf].nombreNormalizado); }
+				 */
+				if (Inicio.listaDocumentos[Inicio.numeroPdf].semaforoAmarilloServicio == true) {
+					Inicio.jBServicio.setBackground(Color.yellow);
+					Inicio.jBServiciop.setBackground(Color.yellow);
+					/*
+					 * if(Inicio.menuVertical){
+					 * Inicio.ventanaMicro.jBServiciom.setBackground
+					 * (Color.gray); }
+					 */
+				}
+
+				// Actualiza fecha
+
+				String fecha = Inicio.listaDocumentos[Inicio.numeroPdf].fecha;
+				if (!fecha.equals("")) {
+					Inicio.jLServicio
+							.setText(Inicio.listaDocumentos[Inicio.numeroPdf].fecha);
+				} else {
+					Inicio.jLServicio.setText("Sin fecha");
+				}
+
+				// Actualiza al servicio del documento
+
+				Inicio.jLServicios.setSelectedValue(
+						Inicio.jBServicio.getText(), true);
+				Inicio.jLNombresDoc.setModel(Inicio.excel
+						.getDocServicio(Inicio.jLServicios.getSelectedValue()
+								.toString()));
+
+				if (Inicio.listaDocumentos[Inicio.numeroPdf].nhc.equals("NO")
+						|| Inicio.listaDocumentos[Inicio.numeroPdf].nhc
+								.contains("ERROR")) {
+
+					/*
+					 * try { Robot robot = new Robot(); robot.delay(1300); }
+					 * catch (AWTException e) { // TODO Auto-generated catch
+					 * block e.printStackTrace(); }
+					 */
+
+					Inicio.ventanaIntroducirNHC = new InterfazIntroducirNHC(
+							null, false, Inicio.jBNHC);
+					Inicio.ventanaIntroducirNHC.setVisible(true);
+
+					// dialog.requestFocus();
+					// jPanel1.requestFocus();
+				}
+
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		
+		} 
 	}
 }

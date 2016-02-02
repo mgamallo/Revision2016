@@ -20,7 +20,7 @@ public class TestLeerExcel {
 		excel.getTablaDocumentos("Documentos.xls");
 		
 		ArrayList<Modelo> modelos = new ArrayList<Modelo>();
-		modelos = excel.leerModelos("DocumentosOCR.xls", false);
+		modelos = excel.leerModelos("DocumentosOCR.xls", 1);
 		
 		/*
 		for(int i=0; i<modelos.size();i++){
@@ -31,9 +31,13 @@ public class TestLeerExcel {
 		abrir = new Abrir();
 	
 		listaDocumentos = new Documento[abrir.pdfs.length];
+		
+		
 		for(int i=0;i<abrir.pdfs.length;i++){
 			System.out.println(abrir.pdfs[i].getAbsolutePath());
 			listaDocumentos[i] = new Documento(abrir.pdfs[i].getAbsolutePath());
+			
+			/*
 			// System.out.println(listaDocumentos[i].cadenaOCR);
 			for(int j=0;j<modelos.size();j++){
 				if(listaDocumentos[i].detector(modelos.get(j))){
@@ -41,6 +45,8 @@ public class TestLeerExcel {
 				}
 					
 			}
+			
+			*/
 			
 			/*
 			System.out.println(listaDocumentos[i].nhc);
@@ -53,6 +59,8 @@ public class TestLeerExcel {
 			*/
 					
 		}
+	
+	
 		int errores = 0;
 		for(int i=0;i<listaDocumentos.length;i++){
 			if(!listaDocumentos[i].renombraFichero(listaDocumentos[0]))

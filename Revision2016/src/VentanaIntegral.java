@@ -15,6 +15,7 @@ import java.io.IOException;
 import javax.swing.AbstractButton;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -28,6 +29,7 @@ public class VentanaIntegral extends javax.swing.JFrame {
 
 	private JMenuItem jMenuVentanaA3;
 	private JMenuItem jMenuSalir;
+	private JButton jBAcrobat;
 
 	/**
      * Creates new form VentanaIntegral
@@ -69,6 +71,8 @@ public class VentanaIntegral extends javax.swing.JFrame {
         jBExtraer = new javax.swing.JButton();
         jPanelRegistrar = new javax.swing.JPanel();
 
+        jBAcrobat = new JButton("Acr");
+        
         jBGrabar = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jBAnr = new javax.swing.JButton();
@@ -159,7 +163,7 @@ public class VentanaIntegral extends javax.swing.JFrame {
 					
 					String usuarioUrgencias = "documentacion";
 					
-					if(Inicio.documentacionDeUrgencias){
+					if(Inicio.destinoDocumentacion == 0){
 						usuarioUrgencias = "urgencias";
 					}
 					
@@ -204,7 +208,7 @@ public class VentanaIntegral extends javax.swing.JFrame {
         jAyudaPalabrasClave.addActionListener(new ActionListener(){				//	Visor por Metadatos
         	public void actionPerformed(ActionEvent arg0){
         		Inicio.ventanaExplorador.cerrarAutoHotKey();
-        		 new InterfazVisorMeta();
+        		 new InterfazAyuda();
         	}
         });
         
@@ -359,7 +363,7 @@ public class VentanaIntegral extends javax.swing.JFrame {
     			   Inicio.jBNombreDoc.setText(Inicio.listaDocumentos[numArchivo].nombreNormalizado);
      			   Inicio.jBNombreDocp.setText(Inicio.listaDocumentos[numArchivo].nombreNormalizado);
      			   Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-     			  Inicio.utiles.encajarNombreNormalizado();
+     			  Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
      			   if(Inicio.listaDocumentos[numArchivo].nombreNormalizado.equals("X") ){
     				   Inicio.jBNombreDoc.setBackground(Color.red);
     				   Inicio.jBNombreDocp.setBackground(Color.red);
@@ -378,7 +382,7 @@ public class VentanaIntegral extends javax.swing.JFrame {
     			   Inicio.jBServiciop.setText(Inicio.listaDocumentos[numArchivo].servicio);
     			   Inicio.jBNombreDocp.setText(Inicio.listaDocumentos[numArchivo].nombreNormalizado);
     			   Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-    			   Inicio.utiles.encajarNombreNormalizado();
+    			   Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
     			   
     			   if(Inicio.listaDocumentos[Inicio.numeroPdf].semaforoAmarilloServicio == true){
     				   Inicio.jBServicio.setBackground(Color.yellow);
@@ -700,7 +704,7 @@ public class VentanaIntegral extends javax.swing.JFrame {
 				Inicio.jBNombreDoc.setText("Eliminar");
 				Inicio.jBNombreDocp.setText("Eliminar");
 				Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-				Inicio.utiles.encajarNombreNormalizado();
+				Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 
 				Inicio.jBNHC.setBackground(Color.gray);
 				Inicio.jBNHCp.setBackground(Color.gray);
@@ -854,6 +858,31 @@ public class VentanaIntegral extends javax.swing.JFrame {
                 .addComponent(jPanelRegistrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        
+        jBAcrobat.setBackground(Color.orange);
+		jBAcrobat.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+
+				File archivo3 = null;
+				archivo3 = new File(Inicio.rutaPreferenciasAdobe);
+
+				try {
+
+					Runtime.getRuntime().exec(
+							"rundll32 url.dll,FileProtocolHandler " + archivo3);
+
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+			}
+		});
+        
+        
         jBAnr.setBackground(new java.awt.Color(255, 255, 51));
         jBAnr.setText(Inicio.ANRC);
         jBAnr.addActionListener(new java.awt.event.ActionListener() {
@@ -887,8 +916,9 @@ public class VentanaIntegral extends javax.swing.JFrame {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 //.addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jBCar, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(jBAnr, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE))
+                	.addComponent(jBAcrobat, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                    .addComponent(jBCar, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                    .addComponent(jBAnr, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
                 //.addContainerGap()
                     )
         );
@@ -896,6 +926,8 @@ public class VentanaIntegral extends javax.swing.JFrame {
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jBAcrobat)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jBAnr)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jBCar)
@@ -906,7 +938,7 @@ public class VentanaIntegral extends javax.swing.JFrame {
 
         jListHabituales1.setBackground(new java.awt.Color(255, 241, 182));
         jListHabituales1.setFont(new java.awt.Font("Serif", 1, 16)); // NOI18N
-        if(Inicio.documentacionDeUrgencias){
+        if(Inicio.destinoDocumentacion == 0){
         	jListHabituales1.setModel(Inicio.excel.listaHabitualesUrg);
         }else{
         	jListHabituales1.setModel(Inicio.excel.listaHabituales1);
@@ -937,7 +969,7 @@ public class VentanaIntegral extends javax.swing.JFrame {
         
         Inicio.jLNombresDoc.setBackground(new java.awt.Color(255, 255, 204));
         Inicio.jLNombresDoc.setFont(new java.awt.Font("Serif", 1, 16)); // NOI18N
-		if(Inicio.documentacionDeUrgencias){
+		if(Inicio.destinoDocumentacion == 0){
 	        Inicio.jLNombresDoc.setModel(Inicio.excel.getDocServicio(Inicio.URG));
 		}
 		else{
@@ -1041,7 +1073,7 @@ public class VentanaIntegral extends javax.swing.JFrame {
 		Inicio.jBNombreDocp.setText(jListHabituales1.getSelectedValue()
 				.toString());
 		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-		Inicio.utiles.encajarNombreNormalizado();
+		Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 		Inicio.jBNombreDoc
 				.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp
@@ -1060,7 +1092,7 @@ public class VentanaIntegral extends javax.swing.JFrame {
 		Inicio.jBNombreDoc.setText(jListHabituales2.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setText(jListHabituales2.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-		Inicio.utiles.encajarNombreNormalizado();
+		Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 		Inicio.jBNombreDoc.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDoc.setIcon(null);
@@ -1077,7 +1109,7 @@ public class VentanaIntegral extends javax.swing.JFrame {
 		Inicio.jBNombreDoc.setText(Inicio.jLNombresDoc.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setText(Inicio.jLNombresDoc.getSelectedValue().toString());
 		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-		Inicio.utiles.encajarNombreNormalizado();
+		Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 		Inicio.jBNombreDoc.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDocp.setBackground(new java.awt.Color(153, 255, 153));
 		Inicio.jBNombreDoc.setIcon(null);
@@ -1286,9 +1318,9 @@ public class VentanaIntegral extends javax.swing.JFrame {
 					// <= 2){
 					Inicio.jBNombreDocp.setText(Inicio.EKG);
 					Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-					Inicio.utiles.encajarNombreNormalizado();
+					Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 					Inicio.jBNombreDoc.setText(Inicio.EKG);
-					if(Inicio.documentacionDeUrgencias){
+					if(Inicio.destinoDocumentacion == 0){
 						Inicio.jBServiciop.setText("URG");
 						Inicio.jBServicio.setText("URG");
 					}else{

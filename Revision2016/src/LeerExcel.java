@@ -18,6 +18,9 @@ import jxl.read.biff.BiffException;
 
 public class LeerExcel {
 
+	
+	enum Centro { Documentación, Urgencias, Salnés, Ambas}
+	
 	String[][] tablaDocumentos;
 	String[] listaDocumentos;
 	String[] listaServicios;
@@ -76,7 +79,7 @@ public class LeerExcel {
 			
             tablaCoordenadas = new Object[numFilas][numColumnas];
             
-            System.out.println("Longitud de la la tablacoordenadas " + tablaCoordenadas.length);
+          //  System.out.println("Longitud de la la tablacoordenadas " + tablaCoordenadas.length);
             
             //	Leer coordenadas usuarios
             for (int fila=0;fila<numFilas-1;fila++){
@@ -89,12 +92,14 @@ public class LeerExcel {
                 }
             } 
             
+            /*
             for(int i=0;i<numFilas-1;i++){
             	for(int j=0;j<numColumnas;j++){
             		System.out.print(tablaCoordenadas[i][j] + "   ");
             	}
             	System.out.println();
             }
+            */
             
 //        	Leer cuadro documentos Visor
             hoja = archivoExcel.getSheet(1);
@@ -497,7 +502,10 @@ public class LeerExcel {
 		        	modelo.instruccionesCIP = hoja.getCell(11,fila).getContents();
 		        	modelo.instruccionesNSS = hoja.getCell(12,fila).getContents();
 		        	
-		        	
+		        	modelo.centroExterno = hoja.getCell(14,fila).getContents();
+		        	modelo.claveCentroExterno1 = hoja.getCell(15,fila).getContents();
+		        	modelo.claveCentroExterno2 = hoja.getCell(16,fila).getContents();
+		        	modelo.claveCentroExterno3 = hoja.getCell(17,fila).getContents();
 		        	
 		        	listaModelos.add(modelo);
 
@@ -505,14 +513,14 @@ public class LeerExcel {
 
 	        }
 	        
-	        
+	        /*
         	for(int i=0;i<listaModelos.size();i++){
         		System.out.print(listaModelos.get(i).rutaImagen + "\t");
         		System.out.print(listaModelos.get(i).nombreNormalizado + "\t");
         		System.out.print(listaModelos.get(i).servicios.get(0) + "\t");
         		
         	}
-	        
+	        */
 	        
         	archivoExcel.close();
 	        
@@ -530,7 +538,7 @@ public class LeerExcel {
 
 	}
 	
-	public ArrayList<Modelo> leerModelos(String archivo, boolean documentacionDeUrgencias){
+	public ArrayList<Modelo> leerModelos(String archivo, int destinoDocumentacion){
 
 		ArrayList<Modelo> listaModelos = new ArrayList<Modelo>();
 		
@@ -553,11 +561,20 @@ public class LeerExcel {
 	        
 	        // Hacemos la elección al reves. Si subimos documentación
 	        // Introducimos en la tabla todos los documentos menos los de urgencias.
-	        String tipoSubida = "Urgencias";
-	        if(documentacionDeUrgencias){
-	        	tipoSubida = "Documentación";
-	        	System.out.println("Elegimos urgencias");
-	        }
+	        String tipoSubida = "";
+	        
+	        switch (destinoDocumentacion) {
+			case 0:
+				tipoSubida = Centro.Urgencias.toString();
+				break;
+			case 1:
+				tipoSubida = Centro.Documentación.toString();
+				break;
+			case 2:
+				tipoSubida = Centro.Salnés.toString();
+				break;
+			}
+
 	        
 	        
 	        Sheet hoja = archivoExcel.getSheet(hojaExcel);
@@ -574,8 +591,10 @@ public class LeerExcel {
 	        	
 	        	// System.out.println("Fila... " + fila);
 	        	
-	        	
-	        	if(!hoja.getCell(5,fila).getContents().toString().equals(tipoSubida)){
+	        	String celda = hoja.getCell(5,fila).getContents().toString();
+	        	if(celda.equals(tipoSubida) || celda.equals(Centro.Ambas.toString())){
+	        		
+	        		System.out.println(fila + "   :   " + celda);
 	        		
 		        	modelo.rutaImagen = hoja.getCell(0,fila).getContents();
 		        	modelo.nombreNormalizado = hoja.getCell(1,fila).getContents();
@@ -646,7 +665,10 @@ public class LeerExcel {
 		        	modelo.instruccionesCIP = hoja.getCell(11,fila).getContents();
 		        	modelo.instruccionesNSS = hoja.getCell(12,fila).getContents();
 		        	
-		        	
+		        	modelo.centroExterno = hoja.getCell(14,fila).getContents();
+		        	modelo.claveCentroExterno1 = hoja.getCell(15,fila).getContents();
+		        	modelo.claveCentroExterno2 = hoja.getCell(16,fila).getContents();
+		        	modelo.claveCentroExterno3 = hoja.getCell(17,fila).getContents();
 		        	
 		        	listaModelos.add(modelo);
 	        	}
@@ -739,7 +761,7 @@ public class LeerExcel {
         int tamaño1 = habituales1.length;
         int tamaño2 = habituales2.length;
         
-        System.out.println(tamaño + " " + tamaño1 + " " + tamaño2);
+    //    System.out.println(tamaño + " " + tamaño1 + " " + tamaño2);
         
         String[] todosLosHabituales = new String[tamaño];
 		for(int i=0;i<tamaño1;i++){
@@ -775,7 +797,7 @@ public class LeerExcel {
     
     Point[] getPreferencias(String nombreUser, int numPantallas){
     	
-    	System.out.println(tablaCoordenadas.length);
+    //	System.out.println(tablaCoordenadas.length);
     	
    	 int numUsers = tablaCoordenadas.length;
    	 Point[] parejaCoordenadas = new Point[6];
@@ -819,11 +841,11 @@ public class LeerExcel {
 	    			 }else{
 	    				 indice = 23;
 	    			 }
-	    			 System.out.println("Indice es " + indice);
+	    		//	 System.out.println("Indice es " + indice);
 	    			 for(int j=0;j<2;j++){
-	    				 System.out.println(Integer.parseInt(tablaCoordenadas[i][indice].toString()));
+	    		//		 System.out.println(Integer.parseInt(tablaCoordenadas[i][indice].toString()));
 	    				 parejaCoordenadas[4 + j].x = Integer.parseInt(tablaCoordenadas[i][indice].toString());indice++;
-	    				 System.out.println(Integer.parseInt(tablaCoordenadas[i][indice].toString()));
+	    		//		 System.out.println(Integer.parseInt(tablaCoordenadas[i][indice].toString()));
 	    				 parejaCoordenadas[4 + j].y = Integer.parseInt(tablaCoordenadas[i][indice].toString());indice++;
 	    			 }
 	    			 
@@ -832,12 +854,14 @@ public class LeerExcel {
    		 }
      }
 
-   	 
+   	
+   	 /*
    	System.out.println("El numero de coordenadas es: " + parejaCoordenadas.length);
    	for(int i=0;i<parejaCoordenadas.length;i++){
    		System.out.println(i + " coordenadas: " + parejaCoordenadas[i].x + ", " +
    					parejaCoordenadas[i].y);
    	}
+   	 */
    	 
    	 return parejaCoordenadas;
     }

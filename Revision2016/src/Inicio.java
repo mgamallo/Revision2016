@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,6 +33,7 @@ public class Inicio extends JFrame {
 	static String RUTA = ":/digitalización/00 documentacion/01 Escaneado";
 //	static final String RUTAB = "h:/digitalización/00 documentacion/01 Escaneado";
 	static String RUTAURG =":/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)"; 
+	static String RUTASAL =":/digitalización/02 Salnés/01 Escaneado";
 
 //	static final String RUTAURGB ="H:/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)";
 	static String RUTA_NO_RECONOCIDOS = ":/digitalización/00 documentacion/10 Registrar docs";
@@ -52,6 +55,7 @@ public class Inicio extends JFrame {
 //	static String rutaFocoNHC = "cal\\FocoNHC.exe";
 	static String rutaFocoAcrobatV = "cal\\FocoAcrobatV.exe";
 	static String rutaFocoAcrobat2015v7 = "cal\\FocoAcrobat2015v7";
+	static String rutaPreferenciasAdobe = "cal\\prefAcrobat.exe";
 
 	static boolean menuVertical = false;
 	
@@ -97,8 +101,8 @@ public class Inicio extends JFrame {
 
 
 
-	
-	static boolean documentacionDeUrgencias = false;
+	//	1 Documentacion; 2 Salnes; 0 Urgencias
+	static int destinoDocumentacion = 1;
 	
 	static JButton jBNHC = new javax.swing.JButton();
     static JButton jBServicio = new javax.swing.JButton();
@@ -138,7 +142,7 @@ public class Inicio extends JFrame {
     static VentanaIntegral ventanaIntegral;
     static VentanaMicro ventanaMicro;
     
-    static InterfazVisorMeta ventanaAyuda;
+    static InterfazAyuda ventanaAyuda;
     static Visor visorAyuda;
         
     static VentanaFechas ventanaFechas;
@@ -167,7 +171,7 @@ public class Inicio extends JFrame {
     static VentanaProgreso vProgreso;
     
     static int numeroPantallas;
-    static int documentacion = 1;
+    static int documentacion = 1; // Documentacion 1; Urgencias 0; Salnes 2;
     static boolean A3 = false;
     static String usuario = "";
     static PreferenciasUsuario coordenadas;
@@ -202,13 +206,8 @@ public class Inicio extends JFrame {
 		
 		if(args.length>0){
 			usuario = args[0];
-			if(args[1].contains("true")){
-				documentacionDeUrgencias = true;
-			}
-			else{
-				documentacionDeUrgencias = false;
-			}
-			
+			destinoDocumentacion = Integer.valueOf(args[1]);
+
 			rebotado = true;
 		}
 		
@@ -219,6 +218,8 @@ public class Inicio extends JFrame {
 		numeroPantallas = gs.length;
 		
 		nombrePc = new IdentificarPc().getIdentificacion(RUTAPC);
+		
+	//	nombrePc = new IdentificarPcYusuario(RUTAPC).nombrePc;
 		
 		System.out.println("Nombre pc... " + nombrePc);
 		
@@ -252,6 +253,7 @@ public class Inicio extends JFrame {
 		unidadHDD = detectaUnidadHDD();
 		RUTA = unidadHDD + RUTA;
 		RUTAURG = unidadHDD + RUTAURG;
+		RUTASAL = unidadHDD + RUTASAL;
 		RUTA_NO_RECONOCIDOS = unidadHDD + RUTA_NO_RECONOCIDOS;
 		
 		rutaHermes = unidadHDD + rutaHermes;
@@ -273,21 +275,18 @@ public class Inicio extends JFrame {
 		
 		
 		if(!rebotado){
-			 	VentanaUrgODoc vud =  new VentanaUrgODoc();
-			    int tipoDoc = vud.getTipoDocumentacion();
-			    if(tipoDoc != -1){
-			    	if(tipoDoc == 0){
-			    		documentacionDeUrgencias = true;
-			    	}
-			    	else{
-			    		documentacionDeUrgencias = false;
-			    	}
-			    }
-			    else{
-			    	System.exit(0);
-			    }
+			 	VentanaTipoDeDocumentacion vtd =  new VentanaTipoDeDocumentacion();
+			 	
+			int tipoDoc = vtd.getTipoDocumentacion();
+			if (tipoDoc != -1) {
+
+				destinoDocumentacion = tipoDoc;
+
+			} else {
+				System.exit(0);
+			}
 			    
-			    System.out.println("documentacion de urgencias: " + documentacionDeUrgencias);
+			    System.out.println("documentacion de urgencias: " + destinoDocumentacion);
 			    
 			    VentanaInicio dialog = new VentanaInicio(new javax.swing.JFrame(), true);
 			    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -302,14 +301,18 @@ public class Inicio extends JFrame {
 		}
 	
 	 //   modelos = excel.leerModelos("DocumentosOCR.xls", documentacionDeUrgencias);
-	    modelos = excel.leerModelos("Hermes.xls", documentacionDeUrgencias);
+	    modelos = excel.leerModelos("Hermes.xls", destinoDocumentacion);
+	    
+	    
 	    listaCompletaModelos = excel.leerListaTotalModelos("Hermes.xls");
 		
+	    /*
 	    for(int i=0;i<listaCompletaModelos.size();i++){
 	    	if(!listaCompletaModelos.get(i).instruccionesNHC.equals("")){
 	    		conjuntoClavesNhc.add(listaCompletaModelos.get(i).instruccionesNHC);
 	    	}
 	    }
+	    */
 	    
 	    /*
 	    System.out.println("Numero de elementos del conjunto: " + conjuntoClavesNhc.size());
@@ -358,17 +361,18 @@ public class Inicio extends JFrame {
            	ventanaExplorador.setBounds(Inicio.coordenadas.coordenadas[0].x,Inicio.coordenadas.coordenadas[0].y,
            			                    Inicio.coordenadas.coordenadas[1].x,Inicio.coordenadas.coordenadas[1].y);
            	
-            ventanaAyuda = new InterfazVisorMeta();
+            ventanaAyuda = new InterfazAyuda();
             visorAyuda = new Visor();
             
             Point pVentanaAyuda = Inicio.ventanaAyuda.getLocation();
             Point pVisorAyuda = Inicio.visorAyuda.getLocation();
             
- 
+ /*
             System.out.println("Localización ventana ayuda x: " + pVentanaAyuda.x);
             System.out.println("Localización ventana ayuda y: " + pVentanaAyuda.y);
             System.out.println("Localización visor ayuda x: " + pVisorAyuda.x);
             System.out.println("Localización visor ayuda y: " + pVisorAyuda.y);
+ */
             
             int x = pVentanaAyuda.x-250;
             int dist = x + 800;
@@ -437,15 +441,16 @@ public class Inicio extends JFrame {
 	
 }
 
-class VentanaUrgODoc{
+class VentanaTipoDeDocumentacion{
 	
 	int getTipoDocumentacion(){
 		
 		int opcion = JOptionPane.showOptionDialog(null, "¿Qué documentación vas a revisar?", "Selector de documentación", 
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null, new Object[] {"Urgencias","Documentación"}, "Documentación");
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null, new Object[] {"Urgencias","Documentación","Salnés"}, "Documentación");
 		/*
-		if(opcion == 0){
-			InicioIanus.documentacion = false;
+			1 Documentacion
+			2 Salnes
+			0 Urgencias
 		}
 		*/
 		
@@ -459,7 +464,7 @@ class VentanaUrgODoc{
 
 
 
-
+/* Obsoleta */
 class IdentificarPc {
 
 	
@@ -480,4 +485,27 @@ class IdentificarPc {
 		
 		return pc;
 	}
+}	
+
+class IdentificarPcYusuario {
+	
+	String nombrePc = "";
+	String usuarioSesion = "";
+	String rutaTrabajo = "";
+	
+	public IdentificarPcYusuario(String ruta){
+		usuarioSesion = System.getProperty("user.name");
+		try {
+			nombrePc = InetAddress.getLocalHost().getHostName();
+			
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("No se puede averiguar el nombre del host.");
+			System.out.println("Version manual.");
+			
+			nombrePc = new IdentificarPc().getIdentificacion(ruta);
+		}
+	}
+	
 }	

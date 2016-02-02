@@ -14,15 +14,17 @@ import javax.swing.JOptionPane;
 public class Utiles {
 	
 	
-	public void encajarNombreNormalizado(){
-		String cadena = Inicio.jBNombreDocp.getText();
-		// JOptionPane.showMessageDialog(null, "Hola");
+	public void encajarNombreNormalizado(String cadena){
+		// String cadena = Inicio.jBNombreDocp.getText();
+
 		if(cadena.length() > 20){
 			Inicio.jBNombreDocp.setFont(new java.awt.Font("Serif", 1, 24));
+			Inicio.jBNombreDoc.setFont(new java.awt.Font("Serif", 1, 24));
 			// JOptionPane.showMessageDialog(null, "Mayor de 20");
 		}
 		else{
 			Inicio.jBNombreDocp.setFont(new java.awt.Font("Serif", 1, 36));
+			Inicio.jBNombreDoc.setFont(new java.awt.Font("Serif", 1, 36));
 			// JOptionPane.showMessageDialog(null, "Menor de 20");
 		}
 	}
@@ -358,7 +360,7 @@ public class Utiles {
 	    	Inicio.jBNombreDoc.setText("");
 	    	Inicio.jBNombreDocp.setText("");
 	    	Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-	    	Inicio.utiles.encajarNombreNormalizado();
+	    	Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
     			
     		}
 
@@ -429,7 +431,7 @@ public class Utiles {
 		Inicio.jBServiciop.setText("Apartar");
 		Inicio.jBNombreDoc.setText("Apartar");
 		Inicio.jBNombreDocp.setText("Apartar");
-		Inicio.utiles.encajarNombreNormalizado();
+		Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 		Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
 		
 		/*
@@ -796,6 +798,8 @@ public class Utiles {
 					 * setBackground(Color.green); }
 					 */
 				}
+				
+				Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
 
 				Inicio.jBNHCp
 						.setText(Inicio.listaDocumentos[Inicio.numeroPdf].nhc);

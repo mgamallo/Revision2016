@@ -21,6 +21,12 @@ public class Modelo {
 	
 	boolean servicioFijo = false;
 	
+	String centroExterno = "";
+	
+	String claveCentroExterno1 = "";
+	String claveCentroExterno2 = "";
+	String claveCentroExterno3 = "";
+	
 	void setMetadatos(){
 		
 	}

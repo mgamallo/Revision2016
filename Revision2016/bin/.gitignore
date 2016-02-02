@@ -24,6 +24,13 @@
 /Indices.class
 /Inicio$1.class
 /Inicio.class
+/InterfazAyuda$1.class
+/InterfazAyuda$2.class
+/InterfazAyuda$3.class
+/InterfazAyuda$4.class
+/InterfazAyuda$5.class
+/InterfazAyuda$MyTableModel.class
+/InterfazAyuda.class
 /InterfazIntroducirNHC$1.class
 /InterfazIntroducirNHC$2.class
 /InterfazIntroducirNHC$3.class
@@ -36,13 +43,6 @@
 /InterfazVisor$3.class
 /InterfazVisor$MyTableModel.class
 /InterfazVisor.class
-/InterfazVisorMeta$1.class
-/InterfazVisorMeta$2.class
-/InterfazVisorMeta$3.class
-/InterfazVisorMeta$4.class
-/InterfazVisorMeta$5.class
-/InterfazVisorMeta$MyTableModel.class
-/InterfazVisorMeta.class
 /InterfazVisorNomDoc$1.class
 /InterfazVisorNomDoc$2.class
 /InterfazVisorNomDoc$3.class
@@ -168,6 +168,7 @@
 /VentanaIntegral$31.class
 /VentanaIntegral$32.class
 /VentanaIntegral$33.class
+/VentanaIntegral$34.class
 /VentanaIntegral$4.class
 /VentanaIntegral$5.class
 /VentanaIntegral$6.class
@@ -205,6 +206,8 @@
 /VentanaPrincipal$22.class
 /VentanaPrincipal$23.class
 /VentanaPrincipal$24.class
+/VentanaPrincipal$25.class
+/VentanaPrincipal$26.class
 /VentanaPrincipal$3.class
 /VentanaPrincipal$4.class
 /VentanaPrincipal$5.class
@@ -220,6 +223,6 @@
 /Visor$3.class
 /Visor$4.class
 /Visor.class
-/Visualizador.class
-/Worker.class
-/es/
+/IdentificarPcYusuario.class
+/VentanaTipoDeDocumentacion.class
+/LeerExcel$Centro.class

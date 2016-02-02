@@ -56,7 +56,7 @@ public class VentanaNombresYServicios extends JFrame{
 		});
 		
         
-		if(Inicio.documentacionDeUrgencias){
+		if(Inicio.destinoDocumentacion == 0){
 	        Inicio.jLNombresDoc.setModel(Inicio.excel.getDocServicio(Inicio.URG));
 		}
 		else{
@@ -74,7 +74,7 @@ public class VentanaNombresYServicios extends JFrame{
         
         jListHabituales1.setBackground(new java.awt.Color(255, 241, 182));
         jListHabituales1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        if(Inicio.documentacionDeUrgencias){
+        if(Inicio.destinoDocumentacion == 0){
         	jListHabituales1.setModel(Inicio.excel.listaHabitualesUrg);
         }else{
         	jListHabituales1.setModel(Inicio.excel.listaHabituales1);

@@ -39,10 +39,12 @@ public class VentanaInicio extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
     	
-    	if(Inicio.documentacion != 0){
+    	if(Inicio.documentacion == 1){
     		setTitle("Documentación");
-    	}else{
+    	}else if(Inicio.documentacion == 0){
     		setTitle("Urgencias");
+    	}else if(Inicio.documentacion == 2){
+    		setTitle("Salnés");
     	}
      	
         jSeparator2 = new javax.swing.JSeparator();

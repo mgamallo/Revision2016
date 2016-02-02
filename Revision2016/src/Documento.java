@@ -536,41 +536,52 @@ public class Documento {
 			if (colum == 1 && !modelo.metadatos.metaServicioNombre.equals("@")) {
 
 				if (cadenaOCR.contains(modelo.metadatos.metaServicioNombre)) {
-					nombreNormalizado = modelo.nombreNormalizado;
-					servicio = modelo.servicios.get(0);
-					// System.out.println("Caso 0: " +modelo.fisica.tamañoPagina
-					// + " = " + fisica.tamañoPagina);
-					System.out.println("Se encontró por esta palabra: "
-							+ modelo.metadatos.metaServicioNombre);
-					System.out.println("El número de imagen es... "
-							+ modelo.numImagen);
-					setNumeroModelo(modelo.numImagen, "A");
+					
+					if(getLocalizado(modelo)){
+						nombreNormalizado = modelo.nombreNormalizado;
+						servicio = modelo.servicios.get(0);
+						// System.out.println("Caso 0: " +modelo.fisica.tamañoPagina
+						// + " = " + fisica.tamañoPagina);
+						System.out.println("Se encontró por esta palabra: "
+								+ modelo.metadatos.metaServicioNombre);
+						System.out.println("El número de imagen es... "
+								+ modelo.numImagen);
+						setNumeroModelo(modelo.numImagen, "A");
 
-					return true;
+						return true;
+					}
+
 				}
 
 			} else if (colum == 2 && !modelo.metadatos.metaNombre.equals("@")) {
 				if (cadenaOCR.contains(modelo.metadatos.metaNombre)) {
-					nombreNormalizado = modelo.nombreNormalizado;
-					// System.out.println("Caso 1: " +modelo.fisica.tamañoPagina
-					// + " = " + fisica.tamañoPagina);
-					System.out.println("Se encontró por esta palabra: "
-							+ modelo.metadatos.metaNombre);
-					setNumeroModelo(modelo.numImagen, "B");
+					
+					if(getLocalizado(modelo)){
+						nombreNormalizado = modelo.nombreNormalizado;
+						// System.out.println("Caso 1: " +modelo.fisica.tamañoPagina
+						// + " = " + fisica.tamañoPagina);
+						System.out.println("Se encontró por esta palabra: "
+								+ modelo.metadatos.metaNombre);
+						setNumeroModelo(modelo.numImagen, "B");
 
-					return true;
+						return true;
+					}
+
 				}
 
 			} else if (colum == 3 && !modelo.metadatos.metaModelo.equals("@")) {
 				if (cadenaOCR.contains(modelo.metadatos.metaModelo)) {
-					nombreNormalizado = modelo.nombreNormalizado;
-					setNumeroModelo(modelo.numImagen, "C");
-					// System.out.println("Caso 2: " +modelo.fisica.tamañoPagina
-					// + " = " + fisica.tamañoPagina);
-					System.out.println("Se encontró por esta palabra: "
-							+ modelo.metadatos.metaModelo);
+					
+					if(getLocalizado(modelo)){
+						nombreNormalizado = modelo.nombreNormalizado;
+						setNumeroModelo(modelo.numImagen, "C");
+						// System.out.println("Caso 2: " +modelo.fisica.tamañoPagina
+						// + " = " + fisica.tamañoPagina);
+						System.out.println("Se encontró por esta palabra: "
+								+ modelo.metadatos.metaModelo);
 
-					return true;
+						return true;
+					}
 				}
 
 			}
@@ -581,7 +592,35 @@ public class Documento {
 	}
 	
 	
+	boolean getLocalizado(Modelo modelo){
+		
+		boolean localizado = false;
+		
+		if(!modelo.centroExterno.equals("")){
+			
+		//	JOptionPane.showMessageDialog(null, "Posible documento centro externo");
+			
+			if(modelo.claveCentroExterno1.length() > 0 && cadenaOCR.contains(modelo.claveCentroExterno1)){
+		//		JOptionPane.showMessageDialog(null, "Clave externa 1");
+				localizado = true;
+			}
+			else if(modelo.claveCentroExterno2.length() > 0 && cadenaOCR.contains(modelo.claveCentroExterno2)){
+		//		JOptionPane.showMessageDialog(null, "Clave externa 2");
+				localizado = true;
+			}
+			else if(modelo.claveCentroExterno3.length() > 0 && cadenaOCR.contains(modelo.claveCentroExterno3)){
+		//		JOptionPane.showMessageDialog(null, "Clave externa 3");
+				localizado = true;
+			}
+		}
+		else{
+			localizado = true;
+		}
+		
+		return localizado;
+	}
 	
+/*	
 	boolean detector(Modelo modelo){   // column = 1, servynombre; column = 2, nombre; column = 3, modelo
 		
 		System.out.println(modelo.numImagen + "  " + modelo.nombreNormalizado + "  " + modelo.servicioFijo + " " + modelo.metadatos.metaServicioNombre);
@@ -673,6 +712,8 @@ public class Documento {
 		
 		return false;
 	}
+	
+*/	
 	
 	boolean detectorRevisado(){
 		return false;

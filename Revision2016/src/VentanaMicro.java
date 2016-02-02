@@ -79,7 +79,7 @@ public class VentanaMicro extends javax.swing.JFrame implements MouseListener {
         Inicio.jBNombreDocp.setMinimumSize(new java.awt.Dimension(360, 60));
         Inicio.jBNombreDocp.setFont(new java.awt.Font("Serif", 1, 36)); // NOI18N
         Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-        Inicio.utiles.encajarNombreNormalizado();
+        Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
         
                 
         
@@ -122,15 +122,15 @@ public class VentanaMicro extends javax.swing.JFrame implements MouseListener {
     				
     				new Acrobat().rotarPagina();
     				if ((Inicio.jBServicio.getText().equals(Inicio.CARC) || Inicio.jBServicio
-    						.getText().equals(Inicio.ANRC) || Inicio.documentacionDeUrgencias)
+    						.getText().equals(Inicio.ANRC) || Inicio.destinoDocumentacion == 0)
     						&& Inicio.jBNombreDoc.getText().equals("X")) {
     					// if(Inicio.listaDocumentos[Inicio.numeroPdf].fisica.numPaginas
     					// <= 2){
     					Inicio.jBNombreDocp.setText(Inicio.EKG);
     					Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-    					Inicio.utiles.encajarNombreNormalizado();
+    					Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
     					Inicio.jBNombreDoc.setText(Inicio.EKG);
-    					if(Inicio.documentacionDeUrgencias){
+    					if(Inicio.destinoDocumentacion == 0){
     						Inicio.jBServiciop.setText(Inicio.URG);
     						Inicio.jBServicio.setText(Inicio.URG);
     					}else{

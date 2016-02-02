@@ -273,11 +273,13 @@ public class VentanaExplorador extends javax.swing.JFrame {
  
 
         
-        jMenuV.add(jMenuItemV2);     
+        jMenuV.add(jMenuItemV2);
+        jMenuItemV2.setEnabled(false);
         jMenuItemV2.addActionListener(new ActionListener(){				//	Visor por Metadatos
         	public void actionPerformed(ActionEvent arg0){
-        		Inicio.utiles.habilitarTeclas(Inicio.jBDeshabilitar.getText(),Inicio.visualizacion);
-        		 Inicio.ventanaAyuda.setVisible(true);;
+            		Inicio.utiles.habilitarTeclas(Inicio.jBDeshabilitar.getText(),Inicio.visualizacion);
+           		 Inicio.ventanaAyuda.setVisible(true);
+
         	}
         });
         
@@ -296,7 +298,7 @@ public class VentanaExplorador extends javax.swing.JFrame {
 					
 					String usuarioUrgencias = "documentacion";
 					
-					if(Inicio.documentacionDeUrgencias){
+					if(Inicio.destinoDocumentacion == 0){
 						usuarioUrgencias = "urgencias";
 					}
 					
@@ -424,14 +426,16 @@ public class VentanaExplorador extends javax.swing.JFrame {
 				// TODO Auto-generated method stub
 				try {
 					
-					String usuarioUrgencias = "documentacion";
+					String tipoDeDocumentacion = "documentacion";
 					
-					if(Inicio.documentacionDeUrgencias){
-						usuarioUrgencias = "urgencias";
+					if(Inicio.destinoDocumentacion == 0){
+						tipoDeDocumentacion = "urgencias";
+					}else if(Inicio.destinoDocumentacion == 2){
+						tipoDeDocumentacion = "salnés";
 					}
 					
 					String comando = "java -jar FirmaArchivo.jar " + Inicio.usuario 
-							+ " " + usuarioUrgencias;
+							+ " " + tipoDeDocumentacion;
 					
 					Runtime.getRuntime().exec(comando);
 				} catch (IOException e) {
@@ -472,6 +476,8 @@ public class VentanaExplorador extends javax.swing.JFrame {
         jLabel1.setForeground(Color.BLUE);
 
         setJMenuBar(jMenuBar1);
+        
+        
         
         listaPdfs.addMouseListener(new MouseAdapter(){
         	public void mouseClicked(MouseEvent evt){
@@ -565,7 +571,7 @@ public class VentanaExplorador extends javax.swing.JFrame {
     			   Inicio.jBServiciop.setText(Inicio.listaDocumentos[numArchivo].servicio);
     			   Inicio.jBNombreDocp.setText(Inicio.listaDocumentos[numArchivo].nombreNormalizado);
     			   Inicio.jBNombreDocp.setToolTipText(Inicio.jBNombreDocp.getText());
-    			   Inicio.utiles.encajarNombreNormalizado();
+    			   Inicio.utiles.encajarNombreNormalizado(Inicio.jBNombreDoc.getText());
     			   
     			   if(Inicio.listaDocumentos[Inicio.numeroPdf].semaforoAmarilloServicio == true){
     				   Inicio.jBServicio.setBackground(Color.yellow);
@@ -653,6 +659,7 @@ public class VentanaExplorador extends javax.swing.JFrame {
         	}
         });
 
+                
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -819,6 +826,7 @@ public class VentanaExplorador extends javax.swing.JFrame {
 			
 			VentanaProgreso vprogreso = new VentanaProgreso(pdfs, visualizacion);
 			
+			jMenuItemV2.setEnabled(true);
 		}
     }
 	
