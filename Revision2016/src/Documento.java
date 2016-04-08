@@ -13,8 +13,10 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfAction;
 import com.itextpdf.text.pdf.PdfDestination;
+import com.itextpdf.text.pdf.PdfDictionary;
 import com.itextpdf.text.pdf.PdfName;
 import com.itextpdf.text.pdf.PdfNumber;
+import com.itextpdf.text.pdf.PdfPage;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -835,6 +837,10 @@ public class Documento {
 			raiz = raiz.substring(0,indexRaiz);
 		}
 
+		if(Inicio.destinoDocumentacion == 2){
+			raiz = Inicio.unidadHDD + ":\\DIGITALIZACIÓN\\02 SALNÉS";
+		}
+		
 		
 		System.out.println(raiz);
 		raiz += "\\02 Revisado" + carpeta;
@@ -910,10 +916,13 @@ public class Documento {
 					 nombreNormalizado.equals("EKG")){
 			*/
 			
-			if(		(servicio.equals(Inicio.CARC)|| servicio.equals(Inicio.ANRC)) && nombreNormalizado.equals(Inicio.EKG)){
+			if(		(servicio.equals(Inicio.CARC)|| servicio.equals(Inicio.ANRC)) && nombreNormalizado.equals(Inicio.EKG)
+					|| (Inicio.destinoDocumentacion == 2 && servicio.equals(Inicio.CARC) && nombreNormalizado.toLowerCase().equals("x"))){
 				
 						// System.out.println("Es un ekg...");
 						boolean girado = false;
+						
+						/*
 						for(int z=1;z <= pdf.getNumberOfPages();z++){
 							Rectangle formatoPagina = pdf.getPageSize(z);
 							int alto = (int)formatoPagina.getHeight();
@@ -924,6 +933,40 @@ public class Documento {
 								girado = true;
 							}
 						}
+						*/
+						
+						int n = pdf.getNumberOfPages();
+						
+						PdfDictionary pageDict;
+						for(int i=1;i<=n;i++){
+							
+							Rectangle formatoPagina = pdf.getPageSize(i);
+							int alto = (int)formatoPagina.getHeight();
+							int ancho = (int) formatoPagina.getWidth();
+							
+							pageDict = pdf.getPageN(i);
+							PdfNumber orientacion = PdfPage.PORTRAIT;
+							pageDict.put(PdfName.ROTATE, orientacion);
+							
+							pageDict = pdf.getPageN(i);
+							
+											
+							if(alto > ancho){
+								pageDict.put(PdfName.ROTATE, new PdfNumber(-90));
+								girado = true;
+							}
+							if(Inicio.destinoDocumentacion == 2){
+								girado = true;
+							}
+							
+							/*
+							if(rotar){
+								pageDict = pdf.getPageN(i);
+								pageDict.put(PdfName.ROTATE, new PdfNumber(rot));
+							}
+							*/
+						}
+						
 						if(girado)
 							nombreNormalizado = Inicio.EKG;
 				

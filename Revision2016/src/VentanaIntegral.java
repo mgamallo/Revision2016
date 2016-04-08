@@ -524,6 +524,7 @@ public class VentanaIntegral extends javax.swing.JFrame {
 							DefaultListModel modelo = new DefaultListModel();
 							modelo.addElement(Inicio.CUIDADOS_INTENSIVOS);
 							modelo.addElement(Inicio.URPA);
+							modelo.addElement(Inicio.REGISTRO_ANESTESIA);
 							
 							Inicio.jLNombresDoc.setModel(modelo);
 					}

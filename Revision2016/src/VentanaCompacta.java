@@ -80,7 +80,7 @@ public class VentanaCompacta extends javax.swing.JFrame {
 		
 		jPanel1.setFocusable(true);
 
-		Inicio.jBNHCp.setEnabled(false);
+	//	Inicio.jBNHCp.setEnabled(false);
 		Inicio.jBNHCp.setFont(new java.awt.Font("Serif", 1, 36)); // NOI18N
 		// Inicio.jBNHCp.setIcon(new
 		// javax.swing.ImageIcon(getClass().getResource("/iconos/CirculoRojo64x64.png")));
@@ -99,7 +99,7 @@ public class VentanaCompacta extends javax.swing.JFrame {
 			}
 		});
 
-		Inicio.jBServiciop.setEnabled(false);
+	//	Inicio.jBServiciop.setEnabled(false);
 		Inicio.jBServiciop.setBackground(new java.awt.Color(233, 0, 0));
 		Inicio.jBServiciop.setFont(new java.awt.Font("Serif", 1, 36)); // NOI18N
 		// Inicio.jBServiciop.setIcon(new
@@ -128,7 +128,7 @@ public class VentanaCompacta extends javax.swing.JFrame {
 
 		});
 
-		Inicio.jBNombreDocp.setEnabled(false);
+	//	Inicio.jBNombreDocp.setEnabled(false);
 		Inicio.jBNombreDocp.setFont(new java.awt.Font("Serif", 1, 36)); // NOI18N
 		// Inicio.jBNombreDocp.setIcon(new
 		// javax.swing.ImageIcon(getClass().getResource("/iconos/NuclearAmarillo128x128.png")));

@@ -33,7 +33,9 @@ public class Inicio extends JFrame {
 	static String RUTA = ":/digitalización/00 documentacion/01 Escaneado";
 //	static final String RUTAB = "h:/digitalización/00 documentacion/01 Escaneado";
 	static String RUTAURG =":/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)"; 
-	static String RUTASAL =":/digitalización/02 Salnés/01 Escaneado";
+//	static String RUTASAL =":/digitalización/02 Salnés/01 Escaneado";
+	static String RUTASAL =":/01 Escaneado";
+
 
 //	static final String RUTAURGB ="H:/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)";
 	static String RUTA_NO_RECONOCIDOS = ":/digitalización/00 documentacion/10 Registrar docs";
@@ -180,6 +182,8 @@ public class Inicio extends JFrame {
 	
     static Utiles utiles = new Utiles();
     
+    static boolean modoAdministrador = false;
+    
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
@@ -253,7 +257,7 @@ public class Inicio extends JFrame {
 		unidadHDD = detectaUnidadHDD();
 		RUTA = unidadHDD + RUTA;
 		RUTAURG = unidadHDD + RUTAURG;
-		RUTASAL = unidadHDD + RUTASAL;
+		RUTASAL = detectaUnidadSalnes() + RUTASAL;
 		RUTA_NO_RECONOCIDOS = unidadHDD + RUTA_NO_RECONOCIDOS;
 		
 		rutaHermes = unidadHDD + rutaHermes;
@@ -279,7 +283,7 @@ public class Inicio extends JFrame {
 			 	
 			int tipoDoc = vtd.getTipoDocumentacion();
 			if (tipoDoc != -1) {
-
+				modoAdministrador = vtd.administrador;
 				destinoDocumentacion = tipoDoc;
 
 			} else {
@@ -398,6 +402,28 @@ public class Inicio extends JFrame {
 	}
 
 	
+	private static String detectaUnidadSalnes(){
+		ArrayList<String> unidades = new ArrayList<String>();
+		
+		String unidad = "k";
+		
+		File[] hdds = File.listRoots();
+		for(int i=0;i<hdds.length;i++){
+			unidades.add(hdds[i].getAbsolutePath().substring(0,1));
+		}
+		
+		for(int i=0;i<unidades.size();i++){
+			String posibleRuta = unidades.get(i) + RUTASAL;
+			File ruta = new File(posibleRuta);
+			if(ruta.exists()){
+				return unidades.get(i);
+			}
+			
+		}
+		
+		return unidad;
+	}
+	
 	private static String detectaUnidadHDD(){
 		
 		ArrayList<String> unidades = new ArrayList<String>();
@@ -443,10 +469,13 @@ public class Inicio extends JFrame {
 
 class VentanaTipoDeDocumentacion{
 	
+	JCheckBox   modoAdmin = new JCheckBox("Administrador");
+	boolean administrador = false;
+	
 	int getTipoDocumentacion(){
 		
 		int opcion = JOptionPane.showOptionDialog(null, "¿Qué documentación vas a revisar?", "Selector de documentación", 
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null, new Object[] {"Urgencias","Documentación","Salnés"}, "Documentación");
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null, new Object[] {"Urgencias","Documentación","Salnés",modoAdmin}, "Documentación");
 		/*
 			1 Documentacion
 			2 Salnes
@@ -455,6 +484,8 @@ class VentanaTipoDeDocumentacion{
 		*/
 		
 		Inicio.documentacion = opcion;
+		
+		administrador = modoAdmin.isSelected();
 		
 		return opcion;
 	}

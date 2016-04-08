@@ -73,7 +73,11 @@ class Worker extends SwingWorker<Double, Integer>{
 			
 			System.out.println(Inicio.listaDocumentos[i].cadenaOCR);
 
-			JOptionPane.showMessageDialog(null, Inicio.listaDocumentos[i].cadenaOCR);
+			if(Inicio.modoAdministrador){
+				// JOptionPane.showMessageDialog(null, Inicio.listaDocumentos[i].cadenaOCR);
+				JOptionPane.showMessageDialog(null, Inicio.listaDocumentos[i].cadenaOCR,pdfs.ficheros[i].getName() , JOptionPane.PLAIN_MESSAGE );
+			}
+			
 			
 			boolean find = false;
 			for(int j=0;j<tamModelos;j++){
@@ -278,7 +282,7 @@ class Worker extends SwingWorker<Double, Integer>{
 					System.out.println("Toas las demas");
 					Inicio.listaDocumentos[j].servicio = servicioPosible;
 				}
-
+		
 				
 			}
 			
@@ -292,6 +296,14 @@ class Worker extends SwingWorker<Double, Integer>{
 		
 		int errores = 0;
 		for(int i=0;i<Inicio.listaDocumentos.length;i++){
+			
+			/*
+			if(Inicio.documentacion == 2 && Inicio.listaDocumentos[i].servicio.equals("CARC") 
+					&& Inicio.listaDocumentos[i].nombreNormalizado.equals(Inicio.EKG)){
+				 RotarEkg.rotarEkg(Inicio.listaDocumentos[i].rutaArchivo, Inicio.listaDocumentos[i].rutaArchivo);
+			}
+			*/
+			
 			if(!Inicio.listaDocumentos[i].renombraFichero(Inicio.listaDocumentos[0]))
 				errores++;
 
@@ -374,7 +386,10 @@ class Worker extends SwingWorker<Double, Integer>{
 	    		System.out.println("Visualización vale..." + visualizacion);
 
 	 
-	    		Inicio.ventanaPrincipal = new VentanaPrincipal();
+	    		if(Inicio.ventanaPrincipal == null){
+	    			Inicio.ventanaPrincipal = new VentanaPrincipal();
+	    		}
+	    		
 		   //     Inicio.ventanaCompacta = new VentanaCompacta();
 		        Inicio.ventanaPrincipal.setBounds(Inicio.coordenadas.coordenadas[3].x, Inicio.coordenadas.coordenadas[3].y, 750, 970);
 		        Inicio.ventanaPrincipal.setResizable(false);
@@ -451,8 +466,12 @@ class Worker extends SwingWorker<Double, Integer>{
 
 	    	}
 	    	else{
+	    			    		
 	    		if(visualizacion == 0){
-		    		Inicio.ventanaPrincipal = new VentanaPrincipal();
+	    			if(Inicio.ventanaPrincipal == null){
+	    				Inicio.ventanaPrincipal = new VentanaPrincipal();
+	    			}
+		    		
 	 		        Inicio.ventanaPrincipal.setBounds(Inicio.coordenadas.coordenadas[3].x, Inicio.coordenadas.coordenadas[3].y, 750, 970);
 	 		        Inicio.ventanaPrincipal.setResizable(false);
 	    			Inicio.ventanaPrincipal.setVisible(true);
@@ -563,6 +582,7 @@ class Worker extends SwingWorker<Double, Integer>{
 	}
 	
 	void abrePrimerPdf(){
+		Inicio.numeroPdf = 0;
 		if (Inicio.numeroPdf < Inicio.tamañoCarpetaPdf - 1) {
 
 
@@ -580,10 +600,11 @@ class Worker extends SwingWorker<Double, Integer>{
 			}
 
 			try {
-				// Process p = Runtime.getRuntime().exec(
-				// "rundll32 url.dll,FileProtocolHandler " + archivo);
+				 Process p = Runtime.getRuntime().exec(
+				 "rundll32 url.dll,FileProtocolHandler " + archivo);
 
-				Desktop.getDesktop().open(archivo);
+				System.out.println(Inicio.listaDocumentos[Inicio.numeroPdf].rutaArchivo);
+				//Desktop.getDesktop().open(archivo);
 
 				Inicio.jBNHC
 						.setText(Inicio.listaDocumentos[Inicio.numeroPdf].nhc);

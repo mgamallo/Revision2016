@@ -14,6 +14,7 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 
@@ -197,6 +198,26 @@ public class VentanaMicro extends javax.swing.JFrame implements MouseListener {
 			}
 		});
         
+		
+		Inicio.jBNombreDocp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Inicio.utiles.habilitarTeclas(Inicio.jBDeshabilitar.getText(),Inicio.visualizacion);
+				
+				String seleccion = JOptionPane.showInputDialog(Inicio.jBNombreDocp,
+						   "Escribe el nombre del documento", "",
+						   JOptionPane.QUESTION_MESSAGE); 
+				
+				if(seleccion != null){
+					Inicio.jBNombreDoc.setText(seleccion);
+					Inicio.jBNombreDocp.setText(seleccion);
+					Inicio.listaDocumentos[Inicio.numeroPdf].nombreNormalizado = seleccion;
+				}
+				
+				Inicio.utiles.habilitarTeclas(Inicio.jBDeshabilitar.getText(),Inicio.visualizacion);
+			}
+		});
+		
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

@@ -274,7 +274,7 @@ public class VentanaExplorador extends javax.swing.JFrame {
 
         
         jMenuV.add(jMenuItemV2);
-        jMenuItemV2.setEnabled(false);
+     //   jMenuItemV2.setEnabled(false);
         jMenuItemV2.addActionListener(new ActionListener(){				//	Visor por Metadatos
         	public void actionPerformed(ActionEvent arg0){
             		Inicio.utiles.habilitarTeclas(Inicio.jBDeshabilitar.getText(),Inicio.visualizacion);
@@ -296,14 +296,19 @@ public class VentanaExplorador extends javax.swing.JFrame {
 				
 			try {
 					
-					String usuarioUrgencias = "documentacion";
+					String tipoUsuario = "documentacion";
 					
 					if(Inicio.destinoDocumentacion == 0){
-						usuarioUrgencias = "urgencias";
+						tipoUsuario = "urgencias";
+					}
+					else if(Inicio.destinoDocumentacion == 2){
+						tipoUsuario = "salnés";
 					}
 					
 					String comando = "java -jar FirmaArchivo.jar " + Inicio.usuario 
-							+ " " + usuarioUrgencias;
+							+ " " + tipoUsuario;
+					
+					System.out.println(comando);
 					
 					Runtime.getRuntime().exec(comando);
 				} catch (IOException e) {
