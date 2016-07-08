@@ -12,6 +12,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
@@ -75,7 +76,12 @@ class Worker extends SwingWorker<Double, Integer>{
 
 			if(Inicio.modoAdministrador){
 				// JOptionPane.showMessageDialog(null, Inicio.listaDocumentos[i].cadenaOCR);
-				JOptionPane.showMessageDialog(null, Inicio.listaDocumentos[i].cadenaOCR,pdfs.ficheros[i].getName() , JOptionPane.PLAIN_MESSAGE );
+				//JOptionPane.showMessageDialog(null, Inicio.listaDocumentos[i].cadenaOCR,pdfs.ficheros[i].getName() , JOptionPane.PLAIN_MESSAGE );
+				JTextArea txt = new JTextArea();
+				txt.setText(Inicio.listaDocumentos[i].cadenaOCR);
+				txt.setEditable(false);
+				JOptionPane.showOptionDialog(null, txt, pdfs.ficheros[i].getName(), JOptionPane.OK_OPTION,
+				                JOptionPane.INFORMATION_MESSAGE, null, null, null);
 			}
 			
 			

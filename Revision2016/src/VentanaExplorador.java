@@ -18,12 +18,14 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -32,6 +34,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import es.mgamallo.firma.VentanaDialogoSinFileChooser;
 
@@ -108,7 +111,8 @@ public class VentanaExplorador extends javax.swing.JFrame {
         jMenuItem33 = new javax.swing.JMenuItem();			//	Guardar todo
         
         jMenuV = new JMenu("Ayuda");																	//	Documentos
-       // jMenuItemV1 = new JMenuItem("Por Servicio");		jMenuItemV1.setEnabled(true);					//	Por Servicio
+        jMenuItemV1 = new JMenuItem("Resetea nombres");		
+        jMenuItemV1.setEnabled(true);					//	Por Servicio
         jMenuItemV2 = new JMenuItem("Ayuda");	jMenuItemV2.setEnabled(true);					//	Por palabra clave
        // jMenuItemV3 = new JMenuItem("Por nombre del documento");			jMenuItemV3.setEnabled(true);	//	Por nombre del documento
         
@@ -283,7 +287,92 @@ public class VentanaExplorador extends javax.swing.JFrame {
         	}
         });
         
+        
+        jMenuV.add(jMenuItemV1);
+     //   jMenuItemV2.setEnabled(false);
+        jMenuItemV1.addActionListener(new ActionListener(){				//	Resetea nombre de los pdfs
+        	public void actionPerformed(ActionEvent arg0){
+            	try{
+            		Inicio.utiles.habilitarTeclas(Inicio.jBDeshabilitar.getText(),Inicio.visualizacion);
 
+            	}catch(Exception e){
+            		
+            	}
+            		
+            		boolean eligeDirectorio = false;
+            		
+            		String ruta =Inicio.RUTA; 
+            		String rutaCarpeta = ""; 
+            		if(Inicio.destinoDocumentacion == 0){
+            			ruta = Inicio.RUTAURG;
+            	    }
+            		else if(Inicio.destinoDocumentacion >= 2 ){
+            			System.out.println(Inicio.RUTASAL);
+            			ruta = Inicio.RUTASAL;
+            		}
+            		
+            		JFileChooser explorador = new JFileChooser();
+            		
+            		explorador.setDialogTitle("Abrir carpeta...");
+
+            		if(Inicio.destinoDocumentacion == 0){
+            				String cadenaUsuario = "\\01 " + Inicio.usuario + "\\01 Escaneado";
+            				ruta += cadenaUsuario;
+            				System.out.println(cadenaUsuario);
+            				explorador.setDialogTitle("Abrir carpeta escaneado de... " + Inicio.usuario);
+            		}
+
+            		explorador.setCurrentDirectory(new File(ruta));
+            		explorador.setFileFilter(new FileNameExtensionFilter("Documentos PDF","pdf"));
+            		explorador.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            		
+            		int seleccion = explorador.showOpenDialog(null);
+            		
+            		if( seleccion == JFileChooser.APPROVE_OPTION){			
+            				eligeDirectorio = true;
+            		}
+            		else{
+            			eligeDirectorio = false;
+            		}
+            			
+            		boolean errores = false;
+            		if (eligeDirectorio){
+            			rutaCarpeta = explorador.getSelectedFile().toString();
+            			System.out.println("Empecemos por aqui " + rutaCarpeta);
+            			
+            			File pdfs[] = new File(rutaCarpeta).listFiles(new FilenameFilter() {
+							
+							@Override
+							public boolean accept(File dir, String name) {
+								// TODO Auto-generated method stub
+								return name.toLowerCase().endsWith(".pdf");
+							}
+						});
+            			
+            			for(int i=0;i<pdfs.length;i++){
+            				String nombreNuevo = pdfs[i].getAbsolutePath();
+            				System.out.println(nombreNuevo);
+            				int index = pdfs[i].getAbsolutePath().lastIndexOf("\\");
+            				nombreNuevo = nombreNuevo.substring(0,index + 22) + ".pdf";
+            				System.out.println(nombreNuevo);
+            				boolean error = pdfs[i].renameTo(new File(nombreNuevo));
+            				if (!error){
+            					errores = true;
+            				}
+            			}
+            			
+            			if(errores){
+            				JOptionPane.showMessageDialog(null, "Renombrado finalizado con errores. Revisa la carpeta");
+            			}
+            			else{
+            				JOptionPane.showMessageDialog(null, "Renombrado finalizado con exito.");
+            			}
+            		}
+        	}
+        });
+        
+        
+        
  
         jMenuFirmar.setText("Firmar");
         jMenuFirmar.add(jMenuItemFirmar);
@@ -301,7 +390,7 @@ public class VentanaExplorador extends javax.swing.JFrame {
 					if(Inicio.destinoDocumentacion == 0){
 						tipoUsuario = "urgencias";
 					}
-					else if(Inicio.destinoDocumentacion == 2){
+					else if(Inicio.destinoDocumentacion >= 2){
 						tipoUsuario = "salnés";
 					}
 					
@@ -850,7 +939,7 @@ public class VentanaExplorador extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemVigo;
     
     private JMenu jMenuV;
-  //  private JMenuItem jMenuItemV1;
+    private JMenuItem jMenuItemV1;
     private JMenuItem jMenuItemV2;
   //  private JMenuItem jMenuItemV3;
     private JSeparator jSeparadorV;

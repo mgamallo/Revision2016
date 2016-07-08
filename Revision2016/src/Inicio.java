@@ -34,7 +34,9 @@ public class Inicio extends JFrame {
 //	static final String RUTAB = "h:/digitalización/00 documentacion/01 Escaneado";
 	static String RUTAURG =":/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)"; 
 //	static String RUTASAL =":/digitalización/02 Salnés/01 Escaneado";
-	static String RUTASAL =":/01 Escaneado";
+	static final String RUTASAL_DOC = ":/01 Escaneado Documentacion";
+	static final String RUTASAL_URG = ":/01 Escaneado Urgencias";
+	static String RUTASAL =":/01 Escaneado Documentacion";
 
 
 //	static final String RUTAURGB ="H:/DIGITALIZACIÓN/01 INFORMES URG (Colectiva)";
@@ -229,6 +231,7 @@ public class Inicio extends JFrame {
 		
 		if(nombrePc.toLowerCase().contains("mahc13p") 
 				|| nombrePc.toLowerCase().contains("mahc35p")
+		//		|| nombrePc.toLowerCase().contains("mahc21p")
 				|| nombrePc.toLowerCase().contains("mahc03p") 
 				|| nombrePc.toLowerCase().contains("mahc01p") 
 				|| nombrePc.toLowerCase().contains("mahc04p") 
@@ -257,7 +260,7 @@ public class Inicio extends JFrame {
 		unidadHDD = detectaUnidadHDD();
 		RUTA = unidadHDD + RUTA;
 		RUTAURG = unidadHDD + RUTAURG;
-		RUTASAL = detectaUnidadSalnes() + RUTASAL;
+		// RUTASAL = detectaUnidadSalnes() + RUTASAL;
 		RUTA_NO_RECONOCIDOS = unidadHDD + RUTA_NO_RECONOCIDOS;
 		
 		rutaHermes = unidadHDD + rutaHermes;
@@ -274,6 +277,9 @@ public class Inicio extends JFrame {
 		//System.out.println("Leemos coordenadas R.xls");
 		excel.getPreferencias("CoordenadasR.xls");
 		
+		
+		// Obtiene los nombres de los facultativos. Posiblemente borrar.
+		excel.leerFacultativos("facSalnes.xls", 1);
 		
 //		CapturaRatonYTeclado capturaBorrar = new CapturaRatonYTeclado();
 		
@@ -402,7 +408,7 @@ public class Inicio extends JFrame {
 	}
 
 	
-	private static String detectaUnidadSalnes(){
+	public static String detectaUnidadSalnes(){
 		ArrayList<String> unidades = new ArrayList<String>();
 		
 		String unidad = "k";
@@ -475,10 +481,11 @@ class VentanaTipoDeDocumentacion{
 	int getTipoDocumentacion(){
 		
 		int opcion = JOptionPane.showOptionDialog(null, "¿Qué documentación vas a revisar?", "Selector de documentación", 
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null, new Object[] {"Urgencias","Documentación","Salnés",modoAdmin}, "Documentación");
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,null, new Object[] {"Urgencias","Documentación","Salnés Doc","Salnés Urg",modoAdmin}, "Documentación");
 		/*
 			1 Documentacion
-			2 Salnes
+			2 Salnes Doc
+			3 Salnes Urg
 			0 Urgencias
 		}
 		*/

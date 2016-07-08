@@ -571,6 +571,7 @@ public class LeerExcel {
 				tipoSubida = Centro.Documentación.toString();
 				break;
 			case 2:
+			case 3:
 				tipoSubida = Centro.Salnés.toString();
 				break;
 			}
@@ -701,6 +702,63 @@ public class LeerExcel {
 
 	}
 	
+	public ArrayList<Facultativo> leerFacultativos(String archivo, int centro){
+		
+		//	2 Montecelo
+		//	1 Salnes
+		
+		ArrayList<Facultativo> listaFacultativos = new ArrayList<Facultativo>();
+		
+		try {
+			
+			WorkbookSettings wbSettings = new WorkbookSettings();
+	        wbSettings.setEncoding("ISO-8859-1");
+	        wbSettings.setLocale(new Locale("es", "ES"));
+	        wbSettings.setExcelDisplayLanguage("ES"); 
+	        wbSettings.setExcelRegionalSettings("ES"); 
+	        wbSettings.setCharacterSet(CountryCode.SPAIN.getValue());
+		
+	        Workbook archivoExcel = Workbook.getWorkbook(new File(archivo));
+	        
+			
+	        int hojaExcel = centro - 1;
+	        
+	        Sheet hoja = archivoExcel.getSheet(hojaExcel);
+	        int numFilas = 1;
+	        
+	        
+	        while(!hoja.getCell(0,numFilas).getContents().toString().equals("ultimo")){
+	        	numFilas++;
+	        }
+	       // numFilas--;
+	        
+	        for(int fila=0;fila<numFilas;fila++){
+	        	Facultativo facultativo;
+	        	
+	        	// System.out.println("Fila... " + fila);
+	        	String servicio = hoja.getCell(0,fila).getContents().toString();
+	        	String nombre = hoja.getCell(1,fila).getContents().toString();
+	        	
+	        	facultativo = new Facultativo(nombre, servicio);
+		        	
+		        listaFacultativos.add(facultativo);
+	        }
+	        
+		}catch (BiffException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for(Facultativo fal: listaFacultativos){
+			System.out.println("Servicio: " + fal.getServicio() + " Nombre: " + fal.getNombre());
+		}
+		
+		
+		return listaFacultativos;
+	}
 	
     DefaultListModel getDocServicio(String servicio){
         int numVinculaciones = 0;

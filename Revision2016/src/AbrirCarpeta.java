@@ -24,7 +24,8 @@ public class AbrirCarpeta {
 			ruta = Inicio.RUTAURG;
 	//		rutab = Inicio.RUTAURGB;
 		}
-		else if(Inicio.destinoDocumentacion == 2){
+		else if(Inicio.destinoDocumentacion >= 2 ){
+			System.out.println(Inicio.RUTASAL);
 			ruta = Inicio.RUTASAL;
 		}
 		

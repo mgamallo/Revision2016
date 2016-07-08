@@ -96,8 +96,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         setTitle("Panel Principal");
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
  //       setPreferredSize(new java.awt.Dimension(720, 680));
-        setPreferredSize(new java.awt.Dimension(760, 1000));
-        setMinimumSize(new Dimension(760,680));
+        setPreferredSize(new java.awt.Dimension(760, 1150));
+        setMinimumSize(new Dimension(760,1150));
         setResizable(true);
 
         jPanelNorteBotones.setBackground(new java.awt.Color(255, 255, 255));
@@ -499,7 +499,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPaneComunes, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPaneComunes, javax.swing.GroupLayout.PREFERRED_SIZE, 700, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 200, Short.MAX_VALUE))
                     .addGap(18,18,18)
@@ -509,7 +509,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                      	.addComponent(jScrollPane3,javax.swing.GroupLayout.PREFERRED_SIZE,250,javax.swing.GroupLayout.PREFERRED_SIZE))
                    	
                    // .addComponent(jScrollServicio, javax.swing.GroupLayout.Alignment.TRAILING))
-                    .addComponent(jScrollServicio, javax.swing.GroupLayout.Alignment.TRAILING,javax.swing.GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE))
+                    .addComponent(jScrollServicio, javax.swing.GroupLayout.Alignment.TRAILING,javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE))
                 .addContainerGap())
         );
 

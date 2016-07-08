@@ -44,7 +44,9 @@ public class VentanaInicio extends javax.swing.JDialog {
     	}else if(Inicio.documentacion == 0){
     		setTitle("Urgencias");
     	}else if(Inicio.documentacion == 2){
-    		setTitle("Salnés");
+    		setTitle("Salnés Documentación");
+    	}else if(Inicio.documentacion == 3){
+    		setTitle("Salnés Urgencias");
     	}
      	
         jSeparator2 = new javax.swing.JSeparator();
@@ -67,10 +69,12 @@ public class VentanaInicio extends javax.swing.JDialog {
                 
         jlistaUsuarios.setBackground(new java.awt.Color(255, 204, 204));
         jlistaUsuarios.setMaximumRowCount(7);
-        if(Inicio.documentacion != 0){
+        if(Inicio.documentacion == 1 || Inicio.documentacion == 2){
             jlistaUsuarios.setModel(Inicio.excel.listaUsuarios);
+            Inicio.RUTASAL = Inicio.detectaUnidadSalnes() + Inicio.RUTASAL_DOC;
         }else{
         	jlistaUsuarios.setModel(Inicio.excel.listaUsuariosUrg);
+        	Inicio.RUTASAL = Inicio.detectaUnidadSalnes() + Inicio.RUTASAL_URG;
         }
 
         jlistaUsuarios.setSelectedIndex(0);

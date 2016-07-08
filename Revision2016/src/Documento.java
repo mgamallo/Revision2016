@@ -837,7 +837,7 @@ public class Documento {
 			raiz = raiz.substring(0,indexRaiz);
 		}
 
-		if(Inicio.destinoDocumentacion == 2){
+		if(Inicio.destinoDocumentacion >= 2){
 			raiz = Inicio.unidadHDD + ":\\DIGITALIZACIÓN\\02 SALNÉS";
 		}
 		
@@ -916,8 +916,14 @@ public class Documento {
 					 nombreNormalizado.equals("EKG")){
 			*/
 			
+			if(Inicio.destinoDocumentacion == 3 && nombreNormalizado.toLowerCase().equals("x") && fisica.tamañoPagina == 0){
+				nombreNormalizado = Inicio.EKG;
+			}
+			
+			
 			if(		(servicio.equals(Inicio.CARC)|| servicio.equals(Inicio.ANRC)) && nombreNormalizado.equals(Inicio.EKG)
-					|| (Inicio.destinoDocumentacion == 2 && servicio.equals(Inicio.CARC) && nombreNormalizado.toLowerCase().equals("x"))){
+					|| (Inicio.destinoDocumentacion == 2 && servicio.equals(Inicio.CARC) && nombreNormalizado.toLowerCase().equals("x"))
+					|| (Inicio.destinoDocumentacion == 3 && nombreNormalizado.equals(Inicio.EKG))){
 				
 						// System.out.println("Es un ekg...");
 						boolean girado = false;
